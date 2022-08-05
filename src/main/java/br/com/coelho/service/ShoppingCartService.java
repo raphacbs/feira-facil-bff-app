@@ -1,27 +1,50 @@
 package br.com.coelho.service;
 
 import br.com.coelho.dto.ShoppingCartDto;
+import br.com.coelho.dto.ShoppingCartProductsDto;
 import br.com.coelho.mapper.ShoppingCartMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import br.com.coelho.mapper.ShoppingCartProductsMapper;
+import br.com.coelho.response.ShoppingCardProductsResponse;
+import br.com.coelho.response.ShoppingCartResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ShoppingCartService {
 
-    private final ShoppingCartMapper shoppingCartProductsMapper = ShoppingCartMapper.INSTANCE;
+    private final ShoppingCartMapper shoppingCartMapper = ShoppingCartMapper.INSTANCE;
+    private final ShoppingCartProductsMapper shoppingCartProductsMapper = ShoppingCartProductsMapper.INSTANCE;
 
 
-    public List<ShoppingCartDto> getAll() {
+    public List<ShoppingCartResponse> getAll() {
         RestTemplate restTemplate = new RestTemplate();
         ShoppingCartDto[] shoppingCartDtos = restTemplate
-                .getForObject("https://feira-facil-dev.herokuapp.com/api/v1/shopping-carts", ShoppingCartDto[].class);
+                .getForObject(System.getenv("BASE_URL") + "/api/v1/shopping-carts", ShoppingCartDto[].class);
         assert shoppingCartDtos != null;
         List<ShoppingCartDto> shoppingCartDtoList = Arrays.asList(shoppingCartDtos);
-        return this.shoppingCartProductsMapper.transform(shoppingCartDtoList);
+        return this.shoppingCartMapper.transform(shoppingCartDtoList);
     }
 
+    public ResponseEntity create(ShoppingCartDto shoppingCartDto) {
+        RestTemplate restTemplate = new RestTemplate();
+        ShoppingCartDto shoppingCartDtoResponse = restTemplate.postForObject(System.getenv("BASE_URL") + "/api/v1/shopping-carts"
+                , shoppingCartDto
+                , ShoppingCartDto.class);
+        final ShoppingCartResponse shoppingCartResponse = this.shoppingCartMapper.transform(shoppingCartDtoResponse);
+        return ResponseEntity.ok().body(shoppingCartResponse);
+    }
+
+    public ResponseEntity<List<ShoppingCardProductsResponse>> getProducts(UUID shoppingCartId) {
+        RestTemplate restTemplate = new RestTemplate();
+        ShoppingCartProductsDto[] shoppingCartProductsDtos = restTemplate.getForObject(System.getenv("BASE_URL") + "/api/v1/shopping-cart-products?shoppingCartId=" + shoppingCartId
+                , ShoppingCartProductsDto[].class);
+        List<ShoppingCartProductsDto> shoppingCartProductsDtoList = Arrays.asList(shoppingCartProductsDtos);
+        final List<ShoppingCardProductsResponse> shoppingCardProductsResponseList = this.shoppingCartProductsMapper.transforme(shoppingCartProductsDtoList);
+        return ResponseEntity.ok().body(shoppingCardProductsResponseList);
+    }
 }

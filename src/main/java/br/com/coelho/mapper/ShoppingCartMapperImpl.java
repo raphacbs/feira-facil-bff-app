@@ -1,6 +1,7 @@
 package br.com.coelho.mapper;
 
 import br.com.coelho.dto.ShoppingCartDto;
+import br.com.coelho.response.ShoppingCartResponse;
 
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
@@ -10,22 +11,21 @@ import java.util.List;
 
 public class ShoppingCartMapperImpl implements ShoppingCartMapper {
     @Override
-    public ShoppingCartDto transform(ShoppingCartDto shoppingCartDto) {
-        shoppingCartDto  = ShoppingCartDto.builder()
+    public ShoppingCartResponse transform(ShoppingCartDto shoppingCartDto) {
+        return ShoppingCartResponse.builder()
                 .amount(parseCurrency(shoppingCartDto.getAmount()))
                 .amountProducts(shoppingCartDto.getAmountProducts())
                 .createAt(formatDate(shoppingCartDto.getCreateAt()))
                 .description(shoppingCartDto.getDescription())
                 .supermarket(shoppingCartDto.getSupermarket())
-                .id(shoppingCartDto.getId())
+                .id(shoppingCartDto.getId().toString())
                 .updateAt(formatDate(shoppingCartDto.getUpdateAt()))
                 .build();
-        return shoppingCartDto;
     }
 
     @Override
-    public List<ShoppingCartDto> transform(List<ShoppingCartDto> shoppingCartDtos) {
-        List<ShoppingCartDto> shoppingCartDtoList = new ArrayList<ShoppingCartDto>();
+    public List<ShoppingCartResponse> transform(List<ShoppingCartDto> shoppingCartDtos) {
+        List<ShoppingCartResponse> shoppingCartDtoList = new ArrayList<ShoppingCartResponse>();
         shoppingCartDtos.forEach(shoppingCartDto -> {
             shoppingCartDtoList.add(transform(shoppingCartDto));
         });
