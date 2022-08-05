@@ -14,7 +14,7 @@ public class ProductMapperImpl implements ProductMapper {
     @Override
     public ProductResponse transfome(ProductDto productDto) {
         return ProductResponse.builder()
-                .createAt(formatDate(productDto.getCreateAt().toString()))
+                .createAt(productDto.getCreateAt() == null ? null : formatDate(productDto.getCreateAt().toString()))
                 .description(productDto.getDescription())
                 .ean(productDto.getEan())
                 .manufacturer(productDto.getManufacturer())

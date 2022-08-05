@@ -4,6 +4,7 @@ import br.com.coelho.dto.ShoppingCartDto;
 import br.com.coelho.dto.ShoppingCartProductsDto;
 import br.com.coelho.mapper.ShoppingCartMapper;
 import br.com.coelho.mapper.ShoppingCartProductsMapper;
+import br.com.coelho.request.ShoppingCardProductsRequest;
 import br.com.coelho.response.ShoppingCardProductsResponse;
 import br.com.coelho.response.ShoppingCartResponse;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +45,18 @@ public class ShoppingCartService {
         ShoppingCartProductsDto[] shoppingCartProductsDtos = restTemplate.getForObject(System.getenv("BASE_URL") + "/api/v1/shopping-cart-products?shoppingCartId=" + shoppingCartId
                 , ShoppingCartProductsDto[].class);
         List<ShoppingCartProductsDto> shoppingCartProductsDtoList = Arrays.asList(shoppingCartProductsDtos);
-        final List<ShoppingCardProductsResponse> shoppingCardProductsResponseList = this.shoppingCartProductsMapper.transforme(shoppingCartProductsDtoList);
+        final List<ShoppingCardProductsResponse> shoppingCardProductsResponseList = this.shoppingCartProductsMapper.transform(shoppingCartProductsDtoList);
         return ResponseEntity.ok().body(shoppingCardProductsResponseList);
+    }
+
+    public ResponseEntity addProduct(UUID shoppingCartId, ShoppingCardProductsRequest shoppingCardProductsRequest) {
+        RestTemplate restTemplate = new RestTemplate();
+        final ShoppingCartProductsDto shoppingCartProductsDto = this.shoppingCartProductsMapper.transform(shoppingCardProductsRequest);
+        shoppingCartProductsDto.setShoppingCart(ShoppingCartDto.builder().id(shoppingCartId).build());
+        final ShoppingCartProductsDto shoppingCartProductsDtoSaved = restTemplate.postForObject(System.getenv("BASE_URL") + "/api/v1/shopping-carts/product",
+                shoppingCartProductsDto,
+                ShoppingCartProductsDto.class);
+        final ShoppingCardProductsResponse shoppingCartResponse = this.shoppingCartProductsMapper.transform(shoppingCartProductsDtoSaved);
+        return  ResponseEntity.ok().body(shoppingCartResponse);
     }
 }
