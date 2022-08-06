@@ -3,7 +3,7 @@ package br.com.coelho.mapper;
 import br.com.coelho.dto.ProductDto;
 import br.com.coelho.dto.CartItemDto;
 import br.com.coelho.request.CartItemRequest;
-import br.com.coelho.response.ShoppingCardProductsResponse;
+import br.com.coelho.response.CartItemResponse;
 
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
@@ -13,22 +13,22 @@ import java.util.List;
 
 public class CartItemMapperImpl implements CartItemMapper {
     @Override
-    public List<ShoppingCardProductsResponse> transform(List<CartItemDto> shoppingCartProducts) {
-        List<ShoppingCardProductsResponse> shoppingCardProductsResponseList = new ArrayList<ShoppingCardProductsResponse>();
+    public List<CartItemResponse> transform(List<CartItemDto> shoppingCartProducts) {
+        List<CartItemResponse> cartItemResponseList = new ArrayList<CartItemResponse>();
         shoppingCartProducts.forEach(cartItemDto -> {
-            shoppingCardProductsResponseList.add(transform(cartItemDto));
+            cartItemResponseList.add(transform(cartItemDto));
         });
-        return shoppingCardProductsResponseList;
+        return cartItemResponseList;
     }
 
     @Override
-    public ShoppingCardProductsResponse transform(CartItemDto shoppingCartProducts) {
-        return ShoppingCardProductsResponse.builder()
+    public CartItemResponse transform(CartItemDto shoppingCartProducts) {
+        return CartItemResponse.builder()
                 .shoppingCartId(shoppingCartProducts.getShoppingCart().getId().toString())
                 .amountOfProduct(shoppingCartProducts.getAmountOfProduct())
                 .subtotal(parseCurrency(shoppingCartProducts.getSubtotal()))
                 .product(ProductMapper.INSTANCE.transfome(shoppingCartProducts.getProduct()))
-                .shoppingCartProductId(shoppingCartProducts.getId().toString())
+                .id(shoppingCartProducts.getId().toString())
                 .unitValue(parseCurrency(shoppingCartProducts.getUnitValue()))
                 .amountOfProduct(shoppingCartProducts.getAmountOfProduct())
                 .subtotal(parseCurrency(shoppingCartProducts.getSubtotal()))

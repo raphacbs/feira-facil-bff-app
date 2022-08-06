@@ -7,8 +7,8 @@ import java.io.Serializable;
 
 @Data
 @Builder
-public class ShoppingCardProductsResponse implements Serializable {
-    private String shoppingCartProductId;
+public class CartItemResponse implements Serializable {
+    private String id;
     private String shoppingCartId;
     private ProductResponse product;
     private String unitValue;
