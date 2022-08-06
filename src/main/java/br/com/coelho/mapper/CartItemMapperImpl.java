@@ -1,8 +1,8 @@
 package br.com.coelho.mapper;
 
 import br.com.coelho.dto.ProductDto;
-import br.com.coelho.dto.ShoppingCartProductsDto;
-import br.com.coelho.request.ShoppingCardProductsRequest;
+import br.com.coelho.dto.CartItemDto;
+import br.com.coelho.request.CartItemRequest;
 import br.com.coelho.response.ShoppingCardProductsResponse;
 
 import java.text.DecimalFormat;
@@ -11,18 +11,18 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShoppingCartProductsMapperImpl implements ShoppingCartProductsMapper {
+public class CartItemMapperImpl implements CartItemMapper {
     @Override
-    public List<ShoppingCardProductsResponse> transform(List<ShoppingCartProductsDto> shoppingCartProducts) {
+    public List<ShoppingCardProductsResponse> transform(List<CartItemDto> shoppingCartProducts) {
         List<ShoppingCardProductsResponse> shoppingCardProductsResponseList = new ArrayList<ShoppingCardProductsResponse>();
-        shoppingCartProducts.forEach(shoppingCartProductsDto -> {
-            shoppingCardProductsResponseList.add(transform(shoppingCartProductsDto));
+        shoppingCartProducts.forEach(cartItemDto -> {
+            shoppingCardProductsResponseList.add(transform(cartItemDto));
         });
         return shoppingCardProductsResponseList;
     }
 
     @Override
-    public ShoppingCardProductsResponse transform(ShoppingCartProductsDto shoppingCartProducts) {
+    public ShoppingCardProductsResponse transform(CartItemDto shoppingCartProducts) {
         return ShoppingCardProductsResponse.builder()
                 .shoppingCartId(shoppingCartProducts.getShoppingCart().getId().toString())
                 .amountOfProduct(shoppingCartProducts.getAmountOfProduct())
@@ -36,12 +36,12 @@ public class ShoppingCartProductsMapperImpl implements ShoppingCartProductsMappe
     }
 
     @Override
-    public ShoppingCartProductsDto transform(ShoppingCardProductsRequest shoppingCardProductsRequest) {
-        return ShoppingCartProductsDto.builder()
+    public CartItemDto transform(CartItemRequest cartItemRequest) {
+        return CartItemDto.builder()
                 .shoppingCart(null)
-                .amountOfProduct(shoppingCardProductsRequest.getAmountOfProduct())
-                .unitValue(shoppingCardProductsRequest.getUnitValue())
-                .product(ProductDto.builder().id(shoppingCardProductsRequest.getProductId()).build())
+                .amountOfProduct(cartItemRequest.getAmountOfProduct())
+                .unitValue(cartItemRequest.getUnitValue())
+                .product(ProductDto.builder().id(cartItemRequest.getProductId()).build())
                 .build();
     }
 

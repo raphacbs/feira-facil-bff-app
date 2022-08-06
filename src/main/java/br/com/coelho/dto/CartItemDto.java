@@ -12,7 +12,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ShoppingCartProductsDto implements Serializable {
+public class CartItemDto implements Serializable {
     private  UUID id;
     private  ShoppingCartDto shoppingCart;
     private  ProductDto product;

@@ -1,7 +1,7 @@
 package br.com.coelho.controller;
 
 import br.com.coelho.dto.ShoppingCartDto;
-import br.com.coelho.request.ShoppingCardProductsRequest;
+import br.com.coelho.request.CartItemRequest;
 import br.com.coelho.response.ShoppingCardProductsResponse;
 import br.com.coelho.service.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +34,8 @@ public class ShoppingCartController {
     }
 
     @PostMapping("{id:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$}/products")
-    public ResponseEntity addProduct(@PathVariable("id") UUID id, @RequestBody ShoppingCardProductsRequest shoppingCardProductsRequest) {
-        return this.shoppingCartService.addProduct(id, shoppingCardProductsRequest);
+    public ResponseEntity addProduct(@PathVariable("id") UUID id, @RequestBody CartItemRequest cartItemRequest) {
+        return this.shoppingCartService.addProduct(id, cartItemRequest);
     }
 
     @GetMapping("/{id:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$}/products")
