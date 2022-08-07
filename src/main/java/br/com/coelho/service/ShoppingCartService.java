@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -52,7 +53,7 @@ public class ShoppingCartService {
         return ResponseEntity.ok().body(cartItemListResponse);
     }
 
-    public ResponseEntity addProduct(UUID shoppingCartId, CartItemRequest cartItemRequest) {
+    public ResponseEntity addProduct(UUID shoppingCartId, CartItemRequest cartItemRequest) throws ParseException {
         RestTemplate restTemplate = new RestTemplate();
         final CartItemDto cartItemDto = this.cartItemMapper.transform(cartItemRequest);
         cartItemDto.setShoppingCart(ShoppingCartDto.builder().id(shoppingCartId).build());
@@ -63,7 +64,7 @@ public class ShoppingCartService {
         return  ResponseEntity.ok().body(shoppingCartResponse);
     }
 
-    public ResponseEntity updateProduct(UUID shoppingCartId, CartItemRequest cartItemRequest) {
+    public ResponseEntity updateProduct(UUID shoppingCartId, CartItemRequest cartItemRequest) throws ParseException {
         RestTemplate restTemplate = new RestTemplate();
         final CartItemDto cartItemDto = this.cartItemMapper.transform(cartItemRequest);
         cartItemDto.setShoppingCart(ShoppingCartDto.builder().id(shoppingCartId).build());

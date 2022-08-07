@@ -13,6 +13,6 @@ import java.util.UUID;
 public class CartItemRequest {
     private UUID productId;
     private UUID id;
-    private double unitValue;
+    private String unitValue;
     private int amountOfProduct;
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,11 +36,11 @@ public class ShoppingCartController {
     }
 
     @PostMapping("{id:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$}/products")
-    public ResponseEntity addProduct(@PathVariable("id") UUID id, @RequestBody CartItemRequest cartItemRequest) {
+    public ResponseEntity addProduct(@PathVariable("id") UUID id, @RequestBody CartItemRequest cartItemRequest) throws ParseException {
         return this.shoppingCartService.addProduct(id, cartItemRequest);
     }
     @PutMapping("{id:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$}/products")
-    public ResponseEntity updateProduct(@PathVariable("id") UUID id, @RequestBody CartItemRequest cartItemRequest) {
+    public ResponseEntity updateProduct(@PathVariable("id") UUID id, @RequestBody CartItemRequest cartItemRequest) throws ParseException {
         return this.shoppingCartService.updateProduct(id, cartItemRequest);
     }
     @GetMapping("/{id:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$}/products")

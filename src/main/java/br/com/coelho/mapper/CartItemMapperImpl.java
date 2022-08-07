@@ -63,11 +63,11 @@ public class CartItemMapperImpl implements CartItemMapper {
     }
 
     @Override
-    public CartItemDto transform(CartItemRequest cartItemRequest) {
+    public CartItemDto transform(CartItemRequest cartItemRequest) throws ParseException {
         return CartItemDto.builder()
                 .shoppingCart(null)
                 .amountOfProduct(cartItemRequest.getAmountOfProduct())
-                .unitValue(cartItemRequest.getUnitValue())
+                .unitValue(parseToDouble(cartItemRequest.getUnitValue()))
                 .product(ProductDto.builder().id(cartItemRequest.getProductId()).build())
                 .id(cartItemRequest.getId())
                 .build();
