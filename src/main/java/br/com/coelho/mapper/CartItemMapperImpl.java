@@ -69,6 +69,7 @@ public class CartItemMapperImpl implements CartItemMapper {
                 .amountOfProduct(cartItemRequest.getAmountOfProduct())
                 .unitValue(cartItemRequest.getUnitValue())
                 .product(ProductDto.builder().id(cartItemRequest.getProductId()).build())
+                .id(cartItemRequest.getId())
                 .build();
     }
 

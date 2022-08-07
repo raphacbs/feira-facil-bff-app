@@ -8,6 +8,8 @@ import br.com.coelho.request.CartItemRequest;
 import br.com.coelho.response.CartItemListResponse;
 import br.com.coelho.response.CartItemResponse;
 import br.com.coelho.response.ShoppingCartResponse;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -58,6 +60,16 @@ public class ShoppingCartService {
                 cartItemDto,
                 CartItemDto.class);
         final CartItemResponse shoppingCartResponse = this.cartItemMapper.transform(cartItemDtoSaved);
+        return  ResponseEntity.ok().body(shoppingCartResponse);
+    }
+
+    public ResponseEntity updateProduct(UUID shoppingCartId, CartItemRequest cartItemRequest) {
+        RestTemplate restTemplate = new RestTemplate();
+        final CartItemDto cartItemDto = this.cartItemMapper.transform(cartItemRequest);
+        cartItemDto.setShoppingCart(ShoppingCartDto.builder().id(shoppingCartId).build());
+        HttpEntity<CartItemDto> entity = new HttpEntity<CartItemDto>(cartItemDto);
+        final ResponseEntity<CartItemDto> response = restTemplate.exchange(System.getenv("BASE_URL") + "/api/v1/shopping-carts/cart-item", HttpMethod.PUT, entity, CartItemDto.class);
+        final CartItemResponse shoppingCartResponse = this.cartItemMapper.transform(response.getBody());
         return  ResponseEntity.ok().body(shoppingCartResponse);
     }
 }

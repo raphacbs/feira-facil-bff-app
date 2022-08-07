@@ -12,6 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class CartItemRequest {
     private UUID productId;
+    private UUID id;
     private double unitValue;
     private int amountOfProduct;
 }

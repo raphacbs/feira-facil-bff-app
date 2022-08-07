@@ -38,7 +38,10 @@ public class ShoppingCartController {
     public ResponseEntity addProduct(@PathVariable("id") UUID id, @RequestBody CartItemRequest cartItemRequest) {
         return this.shoppingCartService.addProduct(id, cartItemRequest);
     }
-
+    @PutMapping("{id:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$}/products")
+    public ResponseEntity updateProduct(@PathVariable("id") UUID id, @RequestBody CartItemRequest cartItemRequest) {
+        return this.shoppingCartService.updateProduct(id, cartItemRequest);
+    }
     @GetMapping("/{id:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$}/products")
     public ResponseEntity<CartItemListResponse> getProducts(@PathVariable("id") UUID shoppingCartId){
         return this.shoppingCartService.getProducts(shoppingCartId);
