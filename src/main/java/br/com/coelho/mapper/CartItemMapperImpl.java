@@ -3,13 +3,19 @@ package br.com.coelho.mapper;
 import br.com.coelho.dto.ProductDto;
 import br.com.coelho.dto.CartItemDto;
 import br.com.coelho.request.CartItemRequest;
+import br.com.coelho.response.CartItemListResponse;
 import br.com.coelho.response.CartItemResponse;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class CartItemMapperImpl implements CartItemMapper {
     @Override
@@ -19,6 +25,27 @@ public class CartItemMapperImpl implements CartItemMapper {
             cartItemResponseList.add(transform(cartItemDto));
         });
         return cartItemResponseList;
+    }
+
+    @Override
+    public CartItemListResponse toCartItemListResponse(List<CartItemDto> shoppingCartProducts) {
+        final List<CartItemResponse> cartItemResponseList = transform(shoppingCartProducts);
+        List<Double> values = new ArrayList<>();
+        cartItemResponseList.forEach(item -> {
+            try {
+                values.add(parseToDouble(item.getSubtotal()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        });
+        double subtotal  = values.stream().mapToDouble(Double::doubleValue).sum();
+        return CartItemListResponse.builder()
+                .cartItems(cartItemResponseList)
+                .amountItems(parseCurrency(subtotal))
+                .totalCartItems(cartItemResponseList.size())
+                .totalProducts(cartItemResponseList.stream().mapToInt(CartItemResponse::getAmountOfProduct).sum())
+                .build();
+
     }
 
     @Override
@@ -46,12 +73,20 @@ public class CartItemMapperImpl implements CartItemMapper {
     }
 
     private String parseCurrency(final double amount) {
-        final DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
-        return decimalFormat.format(amount);
+        NumberFormat nf = NumberFormat.getNumberInstance(Locale.FRANCE);
+        DecimalFormat df = (DecimalFormat) nf;
+        df.applyPattern("#,##0.00");
+        return df.format(amount);
     }
 
     private String formatDate(String date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         return LocalDateTime.parse(date.replaceAll("\\.\\d+", ""), formatter).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+    }
+
+    private double parseToDouble(String value) throws ParseException {
+        NumberFormat format = NumberFormat.getInstance(Locale.FRANCE);
+        Number number = format.parse(value);
+        return number.doubleValue();
     }
 }

@@ -5,6 +5,7 @@ import br.com.coelho.dto.CartItemDto;
 import br.com.coelho.mapper.ShoppingCartMapper;
 import br.com.coelho.mapper.CartItemMapper;
 import br.com.coelho.request.CartItemRequest;
+import br.com.coelho.response.CartItemListResponse;
 import br.com.coelho.response.CartItemResponse;
 import br.com.coelho.response.ShoppingCartResponse;
 import org.springframework.http.ResponseEntity;
@@ -40,13 +41,13 @@ public class ShoppingCartService {
         return ResponseEntity.ok().body(shoppingCartResponse);
     }
 
-    public ResponseEntity<List<CartItemResponse>> getProducts(UUID shoppingCartId) {
+    public ResponseEntity<CartItemListResponse> getProducts(UUID shoppingCartId) {
         RestTemplate restTemplate = new RestTemplate();
         CartItemDto[] cartItemDtos = restTemplate.getForObject(System.getenv("BASE_URL") + "/api/v1/cart-items?shoppingCartId=" + shoppingCartId
                 , CartItemDto[].class);
         List<CartItemDto> cartItemDtoList = Arrays.asList(cartItemDtos);
-        final List<CartItemResponse> cartItemResponseList = this.cartItemMapper.transform(cartItemDtoList);
-        return ResponseEntity.ok().body(cartItemResponseList);
+        final CartItemListResponse cartItemListResponse = this.cartItemMapper.toCartItemListResponse(cartItemDtoList);
+        return ResponseEntity.ok().body(cartItemListResponse);
     }
 
     public ResponseEntity addProduct(UUID shoppingCartId, CartItemRequest cartItemRequest) {

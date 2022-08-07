@@ -2,6 +2,7 @@ package br.com.coelho.controller;
 
 import br.com.coelho.dto.ShoppingCartDto;
 import br.com.coelho.request.CartItemRequest;
+import br.com.coelho.response.CartItemListResponse;
 import br.com.coelho.response.CartItemResponse;
 import br.com.coelho.service.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ public class ShoppingCartController {
     }
 
     @GetMapping("/{id:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$}/products")
-    public ResponseEntity<List<CartItemResponse>> getProducts(@PathVariable("id") UUID shoppingCartId){
+    public ResponseEntity<CartItemListResponse> getProducts(@PathVariable("id") UUID shoppingCartId){
         return this.shoppingCartService.getProducts(shoppingCartId);
     }
 }
