@@ -3,14 +3,12 @@ package br.com.coelho.controller;
 import br.com.coelho.dto.ShoppingCartDto;
 import br.com.coelho.request.CartItemRequest;
 import br.com.coelho.response.CartItemListResponse;
-import br.com.coelho.response.CartItemResponse;
 import br.com.coelho.service.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
-import java.util.List;
 import java.util.UUID;
 
 @RestController

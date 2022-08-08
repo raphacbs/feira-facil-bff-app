@@ -13,6 +13,9 @@ public class ProductMapperImpl implements ProductMapper {
 
     @Override
     public ProductResponse transfome(ProductDto productDto) {
+        if(productDto == null){
+            return null;
+        }
         return ProductResponse.builder()
                 .createAt(productDto.getCreateAt() == null ? null : formatDate(productDto.getCreateAt().toString()))
                 .description(productDto.getDescription())

@@ -14,8 +14,10 @@ import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class CartItemMapperImpl implements CartItemMapper {
     @Override
@@ -29,7 +31,9 @@ public class CartItemMapperImpl implements CartItemMapper {
 
     @Override
     public CartItemListResponse toCartItemListResponse(List<CartItemDto> shoppingCartProducts) {
-        final List<CartItemResponse> cartItemResponseList = transform(shoppingCartProducts);
+        List<CartItemResponse> cartItemResponseList = transform(shoppingCartProducts);
+        cartItemResponseList =  cartItemResponseList.stream().sorted(Comparator.comparing(CartItemResponse::getId)).
+                collect(Collectors.toList());
         List<Double> values = new ArrayList<>();
         cartItemResponseList.forEach(item -> {
             try {

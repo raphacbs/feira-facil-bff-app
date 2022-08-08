@@ -16,8 +16,10 @@ import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ShoppingCartService {
@@ -31,7 +33,8 @@ public class ShoppingCartService {
         ShoppingCartDto[] shoppingCartDtos = restTemplate
                 .getForObject(System.getenv("BASE_URL") + "/api/v1/shopping-carts", ShoppingCartDto[].class);
         assert shoppingCartDtos != null;
-        List<ShoppingCartDto> shoppingCartDtoList = Arrays.asList(shoppingCartDtos);
+        List<ShoppingCartDto> shoppingCartDtoList = Arrays.asList(shoppingCartDtos).stream().sorted(Comparator.comparing(ShoppingCartDto::getId)).
+                collect(Collectors.toList());;
         return this.shoppingCartMapper.transform(shoppingCartDtoList);
     }
 
