@@ -1,6 +1,7 @@
 package br.com.coelho.mapper;
 
 import br.com.coelho.dto.ProductDto;
+import br.com.coelho.request.ProductRequest;
 import br.com.coelho.response.ProductResponse;
 
 import java.time.LocalDateTime;
@@ -24,6 +25,20 @@ public class ProductMapperImpl implements ProductMapper {
                 .image(productDto.getImage())
                 .updateAt(productDto.getUpdateAt() == null ? null : formatDate(productDto.getUpdateAt().toString()))
                 .id(productDto.getId().toString())
+                .build();
+    }
+
+    @Override
+    public ProductDto transfome(ProductRequest productRequest) {
+        if(productRequest == null){
+            return null;
+        }
+        return ProductDto.builder()
+                .image(productRequest.getImage())
+                .ean(productRequest.getEan())
+                .description(productRequest.getDescription())
+                .manufacturer(productRequest.getManufacturer())
+                .createAt(LocalDateTime.now())
                 .build();
     }
 
