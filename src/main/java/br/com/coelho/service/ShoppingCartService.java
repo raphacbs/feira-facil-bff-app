@@ -47,7 +47,7 @@ public class ShoppingCartService {
         return ResponseEntity.ok().body(shoppingCartResponse);
     }
 
-    public ResponseEntity<CartItemListResponse> getProducts(UUID shoppingCartId) {
+    public ResponseEntity<CartItemListResponse> getCartItems(UUID shoppingCartId) {
         RestTemplate restTemplate = new RestTemplate();
         CartItemDto[] cartItemDtos = restTemplate.getForObject(System.getenv("BASE_URL") + "/api/v1/cart-items?shoppingCartId=" + shoppingCartId
                 , CartItemDto[].class);
@@ -56,7 +56,7 @@ public class ShoppingCartService {
         return ResponseEntity.ok().body(cartItemListResponse);
     }
 
-    public ResponseEntity addProduct(UUID shoppingCartId, CartItemRequest cartItemRequest) throws ParseException {
+    public ResponseEntity addCartItem(UUID shoppingCartId, CartItemRequest cartItemRequest) throws ParseException {
         RestTemplate restTemplate = new RestTemplate();
         final CartItemDto cartItemDto = this.cartItemMapper.transform(cartItemRequest);
         cartItemDto.setShoppingCart(ShoppingCartDto.builder().id(shoppingCartId).build());
@@ -67,7 +67,7 @@ public class ShoppingCartService {
         return  ResponseEntity.ok().body(shoppingCartResponse);
     }
 
-    public ResponseEntity updateProduct(UUID shoppingCartId, CartItemRequest cartItemRequest) throws ParseException {
+    public ResponseEntity updateCartItem(UUID shoppingCartId, CartItemRequest cartItemRequest) throws ParseException {
         RestTemplate restTemplate = new RestTemplate();
         final CartItemDto cartItemDto = this.cartItemMapper.transform(cartItemRequest);
         cartItemDto.setShoppingCart(ShoppingCartDto.builder().id(shoppingCartId).build());
@@ -86,5 +86,11 @@ public class ShoppingCartService {
                 , ShoppingCartDto.class);
         final ShoppingCartResponse shoppingCartResponse = this.shoppingCartMapper.transform(shoppingCartDtoResponse.getBody());
         return ResponseEntity.ok().body(shoppingCartResponse);
+    }
+
+    public boolean deleteCartItem(UUID id) {
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.delete(System.getenv("BASE_URL") + "/api/v1/cart-items/" + id.toString());
+        return true;
     }
 }

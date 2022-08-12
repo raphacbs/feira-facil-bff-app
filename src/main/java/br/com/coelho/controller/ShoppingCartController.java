@@ -38,16 +38,17 @@ public class ShoppingCartController {
         return this.shoppingCartService.update(shoppingCartDto);
     }
 
-    @PostMapping("{id:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$}/products")
-    public ResponseEntity addProduct(@PathVariable("id") UUID id, @RequestBody CartItemRequest cartItemRequest) throws ParseException {
-        return this.shoppingCartService.addProduct(id, cartItemRequest);
+    @PostMapping("{id:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$}/cart-item")
+    public ResponseEntity addCartItem(@PathVariable("id") UUID id, @RequestBody CartItemRequest cartItemRequest) throws ParseException {
+        return this.shoppingCartService.addCartItem(id, cartItemRequest);
     }
-    @PutMapping("{id:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$}/products")
-    public ResponseEntity updateProduct(@PathVariable("id") UUID id, @RequestBody CartItemRequest cartItemRequest) throws ParseException {
-        return this.shoppingCartService.updateProduct(id, cartItemRequest);
+    @PutMapping("{id:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$}/cart-item")
+    public ResponseEntity updateCartItem(@PathVariable("id") UUID id, @RequestBody CartItemRequest cartItemRequest) throws ParseException {
+        return this.shoppingCartService.updateCartItem(id, cartItemRequest);
     }
-    @GetMapping("/{id:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$}/products")
-    public ResponseEntity<CartItemListResponse> getProducts(@PathVariable("id") UUID shoppingCartId){
-        return this.shoppingCartService.getProducts(shoppingCartId);
+
+    @GetMapping("/{id:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$}/cart-item")
+    public ResponseEntity<CartItemListResponse> getCartItems(@PathVariable("id") UUID shoppingCartId){
+        return this.shoppingCartService.getCartItems(shoppingCartId);
     }
 }
