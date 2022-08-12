@@ -4,10 +4,12 @@ import br.com.coelho.dto.ShoppingCartDto;
 import br.com.coelho.response.ShoppingCartResponse;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ShoppingCartMapperImpl implements ShoppingCartMapper {
     @Override
@@ -33,9 +35,11 @@ public class ShoppingCartMapperImpl implements ShoppingCartMapper {
         return shoppingCartDtoList;
     }
 
-    private String parseCurrency(final String amount) {
-        final DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
-        return decimalFormat.format(Double.parseDouble(amount));
+    private String parseCurrency(final double amount) {
+        NumberFormat nf = NumberFormat.getNumberInstance(Locale.FRANCE);
+        DecimalFormat df = (DecimalFormat) nf;
+        df.applyPattern("#,##0.00");
+        return "R$ " + df.format(amount);
     }
 
     private String formatDate(String date){

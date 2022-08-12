@@ -18,7 +18,7 @@ public class ShoppingCartDto implements Serializable {
     private String supermarket;
     private String createAt;
     private String updateAt;
-    private String amount;
+    private double amount;
     private int amountProducts;
     private boolean isArchived;
 }
