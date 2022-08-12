@@ -28,10 +28,10 @@ public class ShoppingCartService {
     private final CartItemMapper cartItemMapper = CartItemMapper.INSTANCE;
 
 
-    public List<ShoppingCartResponse> getAll() {
+    public List<ShoppingCartResponse> getAll(boolean isArchived) {
         RestTemplate restTemplate = new RestTemplate();
         ShoppingCartDto[] shoppingCartDtos = restTemplate
-                .getForObject(System.getenv("BASE_URL") + "/api/v1/shopping-carts", ShoppingCartDto[].class);
+                .getForObject(System.getenv("BASE_URL") + "/api/v1/shopping-carts?isArchived="+isArchived, ShoppingCartDto[].class);
         assert shoppingCartDtos != null;
         List<ShoppingCartDto> shoppingCartDtoList = Arrays.asList(shoppingCartDtos).stream().sorted(Comparator.comparing(ShoppingCartDto::getId)).
                 collect(Collectors.toList());;
@@ -75,5 +75,16 @@ public class ShoppingCartService {
         final ResponseEntity<CartItemDto> response = restTemplate.exchange(System.getenv("BASE_URL") + "/api/v1/shopping-carts/cart-item", HttpMethod.PUT, entity, CartItemDto.class);
         final CartItemResponse shoppingCartResponse = this.cartItemMapper.transform(response.getBody());
         return  ResponseEntity.ok().body(shoppingCartResponse);
+    }
+
+    public ResponseEntity update(ShoppingCartDto shoppingCartDto) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity<ShoppingCartDto> entity = new HttpEntity<ShoppingCartDto>(shoppingCartDto);
+        ResponseEntity<ShoppingCartDto> shoppingCartDtoResponse = restTemplate.exchange(System.getenv("BASE_URL") + "/api/v1/shopping-carts"
+                ,HttpMethod.PUT
+                , entity
+                , ShoppingCartDto.class);
+        final ShoppingCartResponse shoppingCartResponse = this.shoppingCartMapper.transform(shoppingCartDtoResponse.getBody());
+        return ResponseEntity.ok().body(shoppingCartResponse);
     }
 }

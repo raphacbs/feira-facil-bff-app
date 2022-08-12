@@ -24,13 +24,18 @@ public class ShoppingCartController {
     }
 
     @GetMapping
-    public ResponseEntity get() {
-        return ResponseEntity.ok().body(this.shoppingCartService.getAll());
+    public ResponseEntity get(@RequestParam boolean isArchived) {
+        return ResponseEntity.ok().body(this.shoppingCartService.getAll(isArchived));
     }
 
     @PostMapping
     public ResponseEntity create(@RequestBody ShoppingCartDto shoppingCartDto) {
         return this.shoppingCartService.create(shoppingCartDto);
+    }
+
+    @PutMapping
+    public ResponseEntity update(@RequestBody ShoppingCartDto shoppingCartDto) {
+        return this.shoppingCartService.update(shoppingCartDto);
     }
 
     @PostMapping("{id:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$}/products")

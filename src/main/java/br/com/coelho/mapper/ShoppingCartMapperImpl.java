@@ -20,6 +20,7 @@ public class ShoppingCartMapperImpl implements ShoppingCartMapper {
                 .supermarket(shoppingCartDto.getSupermarket())
                 .id(shoppingCartDto.getId().toString())
                 .updateAt(formatDate(shoppingCartDto.getUpdateAt()))
+                .isArchived(shoppingCartDto.isArchived())
                 .build();
     }
 
