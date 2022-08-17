@@ -90,6 +90,7 @@ public class CartItemMapperImpl implements CartItemMapper {
     }
 
     private double parseToDouble(String value) throws ParseException {
+        value = value.replace("R$ ","");
         NumberFormat format = NumberFormat.getInstance(Locale.FRANCE);
         Number number = format.parse(value);
         return number.doubleValue();
