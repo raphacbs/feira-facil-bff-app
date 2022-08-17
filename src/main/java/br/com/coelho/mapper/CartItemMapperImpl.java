@@ -81,7 +81,7 @@ public class CartItemMapperImpl implements CartItemMapper {
         NumberFormat nf = NumberFormat.getNumberInstance(Locale.FRANCE);
         DecimalFormat df = (DecimalFormat) nf;
         df.applyPattern("#,##0.00");
-        return df.format(amount);
+        return "R$ " + df.format(amount);
     }
 
     private String formatDate(String date) {
