@@ -1,5 +1,6 @@
 package br.com.coelho.mapper;
 
+import br.com.coelho.dto.ProductCosmoDto;
 import br.com.coelho.dto.ProductDto;
 import br.com.coelho.request.ProductRequest;
 import br.com.coelho.response.ProductResponse;
@@ -26,6 +27,21 @@ public class ProductMapperImpl implements ProductMapper {
                 .updateAt(productDto.getUpdateAt() == null ? null : formatDate(productDto.getUpdateAt().toString()))
                 .id(productDto.getId().toString())
                 .build();
+    }
+
+    @Override
+    public ProductRequest transfome(ProductCosmoDto productCosmoDto) {
+        if(productCosmoDto == null ){
+            return null;
+        }
+
+        return ProductRequest.builder()
+                .ean(productCosmoDto.getGtin())
+                .image("https://drive.google.com/uc?id=1w361FjVApKKJn6g8H5NVZ3IVbL-fSpo4")
+                .manufacturer(productCosmoDto.getBrand() != null ? productCosmoDto.getBrand().getName() : "")
+                .description(productCosmoDto.getDescription())
+                .build();
+
     }
 
     @Override
