@@ -1,14 +1,14 @@
 package br.com.coelho.controller;
 
-import br.com.coelho.dto.ProductDto;
 import br.com.coelho.dto.ShoppingCartDto;
-import br.com.coelho.response.ShoppingCardProductsResponse;
+import br.com.coelho.request.CartItemRequest;
+import br.com.coelho.response.CartItemListResponse;
 import br.com.coelho.service.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.text.ParseException;
 import java.util.UUID;
 
 @RestController
@@ -24,8 +24,8 @@ public class ShoppingCartController {
     }
 
     @GetMapping
-    public ResponseEntity get() {
-        return ResponseEntity.ok().body(this.shoppingCartService.getAll());
+    public ResponseEntity get(@RequestParam boolean isArchived) {
+        return ResponseEntity.ok().body(this.shoppingCartService.getAll(isArchived));
     }
 
     @PostMapping
@@ -33,14 +33,22 @@ public class ShoppingCartController {
         return this.shoppingCartService.create(shoppingCartDto);
     }
 
-    @PostMapping("{id:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$}/products")
-    public ResponseEntity addProduct(@PathVariable("id") UUID id, @RequestBody ProductDto productDto) {
-//        return this.shoppingCartService.addProduct(id, productDto);
-        return null;
+    @PutMapping
+    public ResponseEntity update(@RequestBody ShoppingCartDto shoppingCartDto) {
+        return this.shoppingCartService.update(shoppingCartDto);
     }
 
-    @GetMapping("/{id:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$}/products")
-    public ResponseEntity<List<ShoppingCardProductsResponse>> getProducts(@PathVariable("id") UUID shoppingCartId){
-        return this.shoppingCartService.getProducts(shoppingCartId);
+    @PostMapping("{id:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$}/cart-item")
+    public ResponseEntity addCartItem(@PathVariable("id") UUID id, @RequestBody CartItemRequest cartItemRequest) throws ParseException {
+        return this.shoppingCartService.addCartItem(id, cartItemRequest);
+    }
+    @PutMapping("{id:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$}/cart-item")
+    public ResponseEntity updateCartItem(@PathVariable("id") UUID id, @RequestBody CartItemRequest cartItemRequest) throws ParseException {
+        return this.shoppingCartService.updateCartItem(id, cartItemRequest);
+    }
+
+    @GetMapping("/{id:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$}/cart-item")
+    public ResponseEntity<CartItemListResponse> getCartItems(@PathVariable("id") UUID shoppingCartId){
+        return this.shoppingCartService.getCartItems(shoppingCartId);
     }
 }

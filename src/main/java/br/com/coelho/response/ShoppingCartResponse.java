@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 @Data
 @Builder
@@ -20,4 +19,5 @@ public class ShoppingCartResponse  implements Serializable {
         private String updateAt;
         private String amount;
         private int amountProducts;
+        private boolean isArchived;
 }
