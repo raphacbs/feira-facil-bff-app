@@ -1,6 +1,5 @@
 package br.com.coelho.mapper;
 
-import br.com.coelho.dto.ProductCosmoDto;
 import br.com.coelho.dto.ProductDto;
 import br.com.coelho.request.ProductRequest;
 import br.com.coelho.response.ProductResponse;
@@ -12,7 +11,6 @@ public interface ProductMapper {
     ProductMapper INSTANCE = Mappers.getMapper(ProductMapper.class);
 
     ProductResponse transfome(ProductDto productDto);
-    ProductRequest transfome(ProductCosmoDto productCosmoDto);
     ProductDto transfome(ProductRequest productRequest);
 
     List<ProductResponse> transforme(List<ProductDto> productDtoList);
