@@ -17,7 +17,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -47,22 +46,25 @@ public class ProductService {
             final ResponseEntity<ProductCosmoDto> productCosmoDtoResponseEntity = restTemplate.exchange(
                     "https://api.cosmos.bluesoft.com.br/gtins/" + ean, HttpMethod.GET, requestEntity, ProductCosmoDto.class);
             final ProductRequest productRequest = productMapper.transfome(productCosmoDtoResponseEntity.getBody());
-            final Optional<ProductResponse> productResponse = create(productRequest);
+            final Optional<ProductResponse> productResponse = save(productRequest);
             return productResponse;
         }
         final ProductResponse productResponse = productMapper.transfome(productDto);
         return Optional.ofNullable(productResponse);
     }
 
-    public Optional<ProductResponse> create(ProductRequest productRequest) {
+    public Optional<ProductResponse> save(ProductRequest productRequest) {
         final ProductDto productDto = this.productMapper.transfome(productRequest);
+        return save(productDto);
+    }
+
+    public Optional<ProductResponse> save(ProductDto productDto) {
         RestTemplate restTemplate = new RestTemplate();
         final ProductDto productDtoSaved = restTemplate.postForObject(System.getenv("BASE_URL") + "/api/v1/products"
                 , productDto
                 , ProductDto.class);
         final ProductResponse productResponseSaved = this.productMapper.transfome(productDtoSaved);
         return Optional.ofNullable(productResponseSaved);
-
     }
 
     public Optional<ProductResponse> create(String data, MultipartFile file) throws IOException, GeneralSecurityException {
@@ -73,6 +75,18 @@ public class ProductService {
         String fileId = GoogleHelper.uploadBasic(targetLocation.toString());
         Files.delete(targetLocation.toAbsolutePath());
         productRequest.setImage("https://drive.google.com/uc?id=" + fileId);
-        return create(productRequest);
+        return save(productRequest);
+    }
+
+    public Optional<ProductResponse> update(MultipartFile file, String product) throws IOException, GeneralSecurityException {
+        Gson gson = new Gson();
+        final ProductRequest productRequest = gson.fromJson(product, ProductRequest.class);
+
+        Path targetLocation = this.fileStorageLocation.resolve(productRequest.getEan().toString() + ".jpeg");
+        Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+        String fileId = GoogleHelper.updateFile(productRequest.getEan(), targetLocation.toString());
+        Files.delete(targetLocation.toAbsolutePath());
+        productRequest.setImage("https://drive.google.com/uc?id=" + fileId);
+        return save(productRequest);
     }
 }
