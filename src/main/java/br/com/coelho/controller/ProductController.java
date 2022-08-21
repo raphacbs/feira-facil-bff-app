@@ -36,5 +36,12 @@ public class ProductController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
 
+    @PutMapping()
+    public ResponseEntity<ProductResponse> insertToShoppingCart( @RequestParam("photo") MultipartFile photo, @RequestParam String product) throws IOException, GeneralSecurityException {
+        Optional<ProductResponse> productDtoSaved= this.productService.update(photo, product);
+        return productDtoSaved.map(productResponse -> ResponseEntity.status(HttpStatus.CREATED).body(productResponse))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+    }
+
 
 }

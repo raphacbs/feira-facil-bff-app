@@ -19,6 +19,6 @@ public class ProductDto implements Serializable {
     private  String manufacturer;
     private  String image;
     private  String ean;
-    private  LocalDateTime createAt;
-    private  LocalDateTime updateAt;
+    private  LocalDateTime createAt = null;
+    private  LocalDateTime updateAt = null;
 }

@@ -55,6 +55,8 @@ public class ProductMapperImpl implements ProductMapper {
                 .description(productRequest.getDescription())
                 .manufacturer(productRequest.getManufacturer())
                 .createAt(LocalDateTime.now())
+                .updateAt(LocalDateTime.now())
+                .id(productRequest.getId())
                 .build();
     }
 

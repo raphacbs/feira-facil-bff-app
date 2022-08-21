@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -14,5 +16,6 @@ public class ProductRequest {
     private String manufacturer;
     private String image;
     private String ean;
+    private UUID id;
 
 }

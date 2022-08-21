@@ -25,6 +25,7 @@ import java.security.GeneralSecurityException;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class GoogleHelper {
     /**
@@ -75,6 +76,56 @@ public class GoogleHelper {
         Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
         //returns an authorized Credential object.
         return credential;
+    }
+
+
+    public static void main(String... args) throws IOException, GeneralSecurityException {
+        // Build a new authorized API client service.
+//        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+//        Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+//                .setApplicationName(APPLICATION_NAME)
+//                .build();
+//        FileList result = service.files().list()
+//                .setFields("nextPageToken, files(id, name, webViewLink)")
+//                .setSupportsAllDrives(true)
+//                .execute();
+//        List<File> files = result.getFiles();
+//        if (files == null || files.isEmpty()) {
+//            System.out.println("No files found.");
+//        } else {
+//            System.out.println("Files:");
+//            for (File file : files) {
+//
+//                System.out.printf("%s (%s) %s\n", file.getName(), file.getId(), file.getWebViewLink());
+//            }
+//        }
+
+    }
+
+    public static String updateFile(String fileName, String newFilePath) throws GeneralSecurityException, IOException {
+        java.io.File filePath = new java.io.File(newFilePath);
+        FileContent mediaContent = new FileContent("image/jpeg", filePath);
+
+        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+        Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+                .setApplicationName(APPLICATION_NAME)
+                .build();
+        FileList result = service.files().list()
+                .setFields("nextPageToken, files(id, name, webViewLink)")
+                .setSupportsAllDrives(true)
+                .execute();
+        List<File> files = result.getFiles();
+        if (files != null || !files.isEmpty()) {
+            for (File file : files) {
+                if (file.getName().contains(fileName)) {
+                    service.files().delete(file.getId())
+                            .execute();
+                    return uploadBasic(newFilePath);
+                }
+            }
+
+        }
+        return uploadBasic(newFilePath);
     }
 
 
