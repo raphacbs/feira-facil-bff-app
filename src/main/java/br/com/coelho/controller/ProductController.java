@@ -1,9 +1,7 @@
 package br.com.coelho.controller;
 
-import br.com.coelho.request.ProductRequest;
 import br.com.coelho.response.ProductResponse;
 import br.com.coelho.service.ProductService;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
