@@ -6,8 +6,6 @@ import br.com.coelho.request.CartItemRequest;
 import br.com.coelho.response.CartItemListResponse;
 import br.com.coelho.response.CartItemResponse;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -32,8 +30,6 @@ public class CartItemMapperImpl implements CartItemMapper {
     @Override
     public CartItemListResponse toCartItemListResponse(List<CartItemDto> shoppingCartProducts) {
         List<CartItemResponse> cartItemResponseList = transform(shoppingCartProducts);
-        cartItemResponseList =  cartItemResponseList.stream().sorted(Comparator.comparing(CartItemResponse::getId)).
-                collect(Collectors.toList());
         List<Double> values = new ArrayList<>();
         cartItemResponseList.forEach(item -> {
             try {
@@ -53,16 +49,18 @@ public class CartItemMapperImpl implements CartItemMapper {
     }
 
     @Override
-    public CartItemResponse transform(CartItemDto shoppingCartProducts) {
+    public CartItemResponse transform(CartItemDto cartItemDto) {
+
         return CartItemResponse.builder()
-                .shoppingCartId(shoppingCartProducts.getShoppingCart().getId().toString())
-                .amountOfProduct(shoppingCartProducts.getAmountOfProduct())
-                .subtotal(parseCurrency(shoppingCartProducts.getSubtotal()))
-                .product(ProductMapper.INSTANCE.transfome(shoppingCartProducts.getProduct()))
-                .id(shoppingCartProducts.getId().toString())
-                .unitValue(parseCurrency(shoppingCartProducts.getUnitValue()))
-                .amountOfProduct(shoppingCartProducts.getAmountOfProduct())
-                .subtotal(parseCurrency(shoppingCartProducts.getSubtotal()))
+                .shoppingCartId(cartItemDto.getShoppingCart().getId().toString())
+                .amountOfProduct(cartItemDto.getAmountOfProduct())
+                .subtotal(parseCurrency(cartItemDto.getSubtotal()))
+                .product(ProductMapper.INSTANCE.transfome(cartItemDto.getProduct()))
+                .id(cartItemDto.getId().toString())
+                .unitValue(parseCurrency(cartItemDto.getUnitValue()))
+                .amountOfProduct(cartItemDto.getAmountOfProduct())
+                .subtotal(parseCurrency(cartItemDto.getSubtotal()))
+                .createdAt(cartItemDto.getCreatedAt() != null ? formatDate(cartItemDto.getCreatedAt().format(DateTimeFormatter.ISO_DATE_TIME)) : "")
                 .build();
     }
 
@@ -74,6 +72,7 @@ public class CartItemMapperImpl implements CartItemMapper {
                 .unitValue(parseToDouble(cartItemRequest.getUnitValue()))
                 .product(ProductDto.builder().id(cartItemRequest.getProductId()).build())
                 .id(cartItemRequest.getId())
+                .createdAt(LocalDateTime.now())
                 .build();
     }
 
@@ -86,7 +85,7 @@ public class CartItemMapperImpl implements CartItemMapper {
 
     private String formatDate(String date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-        return LocalDateTime.parse(date.replaceAll("\\.\\d+", ""), formatter).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        return LocalDateTime.parse(date.replaceAll("\\.\\d+", ""), formatter).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
     }
 
     private double parseToDouble(String value) throws ParseException {

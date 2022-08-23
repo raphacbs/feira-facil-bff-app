@@ -14,5 +14,6 @@ public class CartItemResponse implements Serializable {
     private String unitValue;
     private int amountOfProduct;
     private String subtotal;
+    private String createdAt;
 }
 

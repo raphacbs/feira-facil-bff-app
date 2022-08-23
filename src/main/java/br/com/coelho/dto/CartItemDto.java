@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.tomcat.jni.Local;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -19,4 +21,5 @@ public class CartItemDto implements Serializable {
     private double unitValue;
     private int amountOfProduct;
     private double subtotal;
+    private LocalDateTime createdAt;
 }
