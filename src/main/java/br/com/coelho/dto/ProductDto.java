@@ -16,7 +16,7 @@ import java.util.UUID;
 public class ProductDto implements Serializable {
     private  UUID id;
     private  String description;
-    private  String manufacturer;
+    private  String brand;
     private  String image;
     private  String ean;
     private  LocalDateTime createAt = null;
