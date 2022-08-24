@@ -22,7 +22,7 @@ public class ProductMapperImpl implements ProductMapper {
                 .createAt(productDto.getCreateAt() == null ? null : formatDate(productDto.getCreateAt().toString()))
                 .description(productDto.getDescription())
                 .ean(productDto.getEan())
-                .manufacturer(productDto.getManufacturer())
+                .brand(productDto.getBrand())
                 .image(productDto.getImage())
                 .updateAt(productDto.getUpdateAt() == null ? null : formatDate(productDto.getUpdateAt().toString()))
                 .id(productDto.getId().toString())
@@ -38,7 +38,7 @@ public class ProductMapperImpl implements ProductMapper {
         return ProductRequest.builder()
                 .ean(productCosmoDto.getGtin())
                 .image("https://drive.google.com/uc?id=1w361FjVApKKJn6g8H5NVZ3IVbL-fSpo4")
-                .manufacturer(productCosmoDto.getBrand() != null ? productCosmoDto.getBrand().getName() : "")
+                .brand(productCosmoDto.getBrand() != null ? productCosmoDto.getBrand().getName() : "")
                 .description(productCosmoDto.getDescription())
                 .build();
 
@@ -53,7 +53,7 @@ public class ProductMapperImpl implements ProductMapper {
                 .image(productRequest.getImage())
                 .ean(productRequest.getEan())
                 .description(productRequest.getDescription())
-                .manufacturer(productRequest.getManufacturer())
+                .brand(productRequest.getBrand())
                 .createAt(LocalDateTime.now())
                 .updateAt(LocalDateTime.now())
                 .id(productRequest.getId())

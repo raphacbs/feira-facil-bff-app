@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class ProductRequest {
     private String description;
-    private String manufacturer;
+    private String brand;
     private String image;
     private String ean;
     private UUID id;
