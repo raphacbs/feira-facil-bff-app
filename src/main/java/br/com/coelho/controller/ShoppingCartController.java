@@ -1,8 +1,8 @@
 package br.com.coelho.controller;
 
 import br.com.coelho.dto.ShoppingCartDto;
-import br.com.coelho.request.CartItemRequest;
-import br.com.coelho.response.CartItemListResponse;
+import br.com.coelho.dto.request.CartItemRequest;
+import br.com.coelho.dto.response.CartItemListResponse;
 import br.com.coelho.service.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

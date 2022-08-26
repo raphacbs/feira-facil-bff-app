@@ -2,9 +2,9 @@ package br.com.coelho.mapper;
 
 import br.com.coelho.dto.ProductDto;
 import br.com.coelho.dto.CartItemDto;
-import br.com.coelho.request.CartItemRequest;
-import br.com.coelho.response.CartItemListResponse;
-import br.com.coelho.response.CartItemResponse;
+import br.com.coelho.dto.request.CartItemRequest;
+import br.com.coelho.dto.response.CartItemListResponse;
+import br.com.coelho.dto.response.CartItemResponse;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -12,10 +12,8 @@ import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 public class CartItemMapperImpl implements CartItemMapper {
     @Override

@@ -2,20 +2,22 @@ package br.com.coelho.mapper;
 
 import br.com.coelho.dto.ProductCosmoDto;
 import br.com.coelho.dto.ProductDto;
-import br.com.coelho.request.ProductRequest;
-import br.com.coelho.response.ProductResponse;
+import br.com.coelho.dto.request.ProductRequest;
+import br.com.coelho.dto.response.ProductListResponse;
+import br.com.coelho.dto.response.ProductResponse;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ProductMapperImpl implements ProductMapper {
 
 
     @Override
     public ProductResponse transfome(ProductDto productDto) {
-        if(productDto == null){
+        if (productDto == null) {
             return null;
         }
         return ProductResponse.builder()
@@ -31,7 +33,7 @@ public class ProductMapperImpl implements ProductMapper {
 
     @Override
     public ProductRequest transfome(ProductCosmoDto productCosmoDto) {
-        if(productCosmoDto == null ){
+        if (productCosmoDto == null) {
             return null;
         }
 
@@ -46,7 +48,7 @@ public class ProductMapperImpl implements ProductMapper {
 
     @Override
     public ProductDto transfome(ProductRequest productRequest) {
-        if(productRequest == null){
+        if (productRequest == null) {
             return null;
         }
         return ProductDto.builder()
@@ -61,12 +63,23 @@ public class ProductMapperImpl implements ProductMapper {
     }
 
     @Override
-    public List<ProductResponse> transforme(List<ProductDto> productDtoList) {
+    public ProductListResponse transforme(List<ProductDto> productDtoList) {
         List<ProductResponse> productResponseList = new ArrayList<ProductResponse>();
         productDtoList.forEach(productDto -> {
             productResponseList.add(transfome(productDto));
         });
-        return productResponseList;
+
+        return ProductListResponse.builder().products(productResponseList).count(productResponseList.size()).build();
+    }
+
+    @Override
+    public ProductListResponse transfome(Optional<ProductResponse> productResponse) {
+        if(productResponse.isPresent()){
+            List<ProductResponse> productResponseList = new ArrayList<ProductResponse>();
+            productResponseList.add(productResponse.get());
+          return ProductListResponse.builder().count(1).products(productResponseList).build();
+        }
+        return null;
     }
 
     private String formatDate(String date) {

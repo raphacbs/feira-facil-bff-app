@@ -1,4 +1,4 @@
-package br.com.coelho.response;
+package br.com.coelho.dto.response;
 
 import lombok.Builder;
 import lombok.Data;

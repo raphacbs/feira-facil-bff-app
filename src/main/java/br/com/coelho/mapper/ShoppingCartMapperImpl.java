@@ -1,7 +1,7 @@
 package br.com.coelho.mapper;
 
 import br.com.coelho.dto.ShoppingCartDto;
-import br.com.coelho.response.ShoppingCartResponse;
+import br.com.coelho.dto.response.ShoppingCartResponse;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;

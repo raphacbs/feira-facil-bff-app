@@ -1,6 +1,8 @@
 package br.com.coelho.controller;
 
-import br.com.coelho.response.ProductResponse;
+import br.com.coelho.dto.request.ProductRequest;
+import br.com.coelho.dto.response.ProductListResponse;
+import br.com.coelho.dto.response.ProductResponse;
 import br.com.coelho.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +23,10 @@ public class ProductController {
         this.productService = productService;
     }
     @GetMapping()
-    public ResponseEntity<ProductResponse> getByEan(@RequestParam("ean") String ean){
-        final Optional<ProductResponse> productResponse = this.productService.getByEan(ean);
-        return productResponse.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.noContent().build());
+    public ResponseEntity<ProductListResponse> get(@RequestParam(value = "ean", required = false) String ean, @RequestParam(value = "description", required = false) String description) throws Exception {
+        final Optional<ProductListResponse> product = this.productService.get(ProductRequest.builder().ean(ean).description(description).build());
+        return product.map(productResponse -> ResponseEntity.status(HttpStatus.CREATED).body(productResponse))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NO_CONTENT).build());
     }
 
     @PostMapping()
