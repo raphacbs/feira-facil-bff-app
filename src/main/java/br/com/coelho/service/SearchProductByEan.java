@@ -20,7 +20,6 @@ import java.util.List;
 public class SearchProductByEan implements SearchProduct {
     private static final Logger logger = LoggerFactory.getLogger(SearchProductByEan.class);
 
-    @Override
     public List<ProductDto> get(ProductRequest productRequest) {
         logger.info("Searching product by EAN: {}", productRequest.getEan());
         HttpEntity<Void> requestEntity = new HttpEntity<>(AuthHelper.getHeaderAuth());

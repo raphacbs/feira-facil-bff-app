@@ -6,9 +6,10 @@ import br.com.coelho.service.SearchProduct;
 import br.com.coelho.service.SearchProductByDescription;
 import br.com.coelho.service.SearchProductByEan;
 import br.com.coelho.service.SearchProductCosmo;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+
+@Component
 public class SearchProductFactory {
     private final ProductMapper productMapper = ProductMapper.INSTANCE;
 

@@ -25,7 +25,7 @@ public class ProductController {
     @GetMapping()
     public ResponseEntity<ProductListResponse> get(@RequestParam(value = "ean", required = false) String ean, @RequestParam(value = "description", required = false) String description) throws Exception {
         final Optional<ProductListResponse> product = this.productService.get(ProductRequest.builder().ean(ean).description(description).build());
-        return product.map(productResponse -> ResponseEntity.status(HttpStatus.CREATED).body(productResponse))
+        return product.map(productResponse -> ResponseEntity.status(HttpStatus.OK).body(productResponse))
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NO_CONTENT).build());
     }
 
