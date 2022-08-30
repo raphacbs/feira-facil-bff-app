@@ -46,7 +46,8 @@ public class ProductService {
     public Optional<ProductListResponse> get(ProductRequest productRequest) throws Exception {
         if (productRequest.getEan() != null) {
             return Optional.ofNullable(getByEan(productRequest));
-        }if(productRequest.getDescription() != null){
+        }
+        if (productRequest.getDescription() != null) {
             return Optional.ofNullable(getByDescription(productRequest));
         }
         return Optional.empty();
@@ -61,7 +62,7 @@ public class ProductService {
         SearchProduct searchProduct = searchProductFactory.create(EnumSearchProduct.ByEan);
         List<ProductDto> productDtoList = searchProduct.get(productRequest);
         if (productDtoList.size() > 0) {
-           return this.productMapper.transforme(productDtoList);
+            return this.productMapper.transforme(productDtoList);
         } else {
             final SearchProduct searchProductCosmo = searchProductFactory.create(EnumSearchProduct.InCosmo);
             final List<ProductDto> productCosmo = searchProductCosmo.get(productRequest);
@@ -100,7 +101,7 @@ public class ProductService {
         Gson gson = new Gson();
         final ProductRequest productRequest = gson.fromJson(data, ProductRequest.class);
         Path targetLocation = this.fileStorageLocation.resolve(productRequest.getEan().toString() + ".jpeg");
-        if(file != null){
+        if (file != null) {
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
             fileId = GoogleHelper.uploadBasic(targetLocation.toString());
             Files.delete(targetLocation.toAbsolutePath());
@@ -113,9 +114,11 @@ public class ProductService {
         Gson gson = new Gson();
         final ProductRequest productRequest = gson.fromJson(product, ProductRequest.class);
         Path targetLocation = this.fileStorageLocation.resolve(productRequest.getEan().toString() + ".jpeg");
-        Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-        String fileId = GoogleHelper.updateFile(productRequest.getEan(), targetLocation.toString());
-        Files.delete(targetLocation.toAbsolutePath());
+        if (file != null) {
+            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+            fileId = GoogleHelper.updateFile(productRequest.getEan(), targetLocation.toString());
+            Files.delete(targetLocation.toAbsolutePath());
+        }
         productRequest.setImage("https://drive.google.com/uc?id=" + fileId);
         return save(productRequest);
     }
