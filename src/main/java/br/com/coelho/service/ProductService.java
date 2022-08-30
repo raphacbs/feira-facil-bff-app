@@ -34,6 +34,7 @@ public class ProductService {
     private final Path fileStorageLocation;
     private final SearchProductFactory searchProductFactory;
     private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
+    private static String fileId = "1w361FjVApKKJn6g8H5NVZ3IVbL-fSpo4";
 
     @Autowired
     public ProductService(FileStorageProperties fileStorageProperties, SearchProductFactory searchProductFactory) throws IOException {
@@ -99,9 +100,11 @@ public class ProductService {
         Gson gson = new Gson();
         final ProductRequest productRequest = gson.fromJson(data, ProductRequest.class);
         Path targetLocation = this.fileStorageLocation.resolve(productRequest.getEan().toString() + ".jpeg");
-        Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-        String fileId = GoogleHelper.uploadBasic(targetLocation.toString());
-        Files.delete(targetLocation.toAbsolutePath());
+        if(file != null){
+            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+            fileId = GoogleHelper.uploadBasic(targetLocation.toString());
+            Files.delete(targetLocation.toAbsolutePath());
+        }
         productRequest.setImage("https://drive.google.com/uc?id=" + fileId);
         return save(productRequest);
     }

@@ -30,7 +30,7 @@ public class ProductController {
     }
 
     @PostMapping()
-    public ResponseEntity<ProductResponse> create( @RequestParam("photo") MultipartFile photo, @RequestParam String data) throws IOException, GeneralSecurityException {
+    public ResponseEntity<ProductResponse> create( @RequestParam(value= "photo", required = false) MultipartFile photo, @RequestParam String data) throws IOException, GeneralSecurityException {
         Optional<ProductResponse> productDtoSaved= this.productService.create(data, photo);
         return productDtoSaved.map(productResponse -> ResponseEntity.status(HttpStatus.CREATED).body(productResponse))
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
