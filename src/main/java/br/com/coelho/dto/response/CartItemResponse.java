@@ -1,5 +1,6 @@
 package br.com.coelho.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 
@@ -15,6 +16,7 @@ public class CartItemResponse implements Serializable {
     private int amountOfProduct;
     private String subtotal;
     private String createdAt;
+    @JsonProperty("isChecked")
     private boolean isChecked;
 }
 
