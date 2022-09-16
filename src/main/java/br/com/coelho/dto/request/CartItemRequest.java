@@ -1,5 +1,6 @@
 package br.com.coelho.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,5 +16,6 @@ public class CartItemRequest {
     private UUID id;
     private String unitValue;
     private int amountOfProduct;
+    @JsonProperty("isChecked")
     private boolean isChecked;
 }
