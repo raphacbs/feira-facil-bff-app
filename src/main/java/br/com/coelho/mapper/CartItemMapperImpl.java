@@ -29,6 +29,7 @@ public class CartItemMapperImpl implements CartItemMapper {
     public CartItemListResponse toCartItemListResponse(List<CartItemDto> shoppingCartProducts) {
         List<CartItemResponse> cartItemResponseList = transform(shoppingCartProducts);
         List<Double> values = new ArrayList<>();
+        List<Double> valuesChecked = new ArrayList<>();
         cartItemResponseList.forEach(item -> {
             try {
                 values.add(parseToDouble(item.getSubtotal()));
@@ -36,12 +37,23 @@ public class CartItemMapperImpl implements CartItemMapper {
                 e.printStackTrace();
             }
         });
+        cartItemResponseList.forEach(item -> {
+            try {
+                if(item.isChecked()){
+                    valuesChecked.add(parseToDouble(item.getSubtotal()));
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        });
         double subtotal  = values.stream().mapToDouble(Double::doubleValue).sum();
+        double subtotalChecked  = valuesChecked.stream().mapToDouble(Double::doubleValue).sum();
         return CartItemListResponse.builder()
                 .cartItems(cartItemResponseList)
                 .amountItems(parseCurrency(subtotal))
                 .totalCartItems(cartItemResponseList.size())
                 .totalProducts(cartItemResponseList.stream().mapToInt(CartItemResponse::getAmountOfProduct).sum())
+                .subtotalChecked(parseCurrency(subtotalChecked))
                 .build();
 
     }
@@ -59,6 +71,7 @@ public class CartItemMapperImpl implements CartItemMapper {
                 .amountOfProduct(cartItemDto.getAmountOfProduct())
                 .subtotal(parseCurrency(cartItemDto.getSubtotal()))
                 .createdAt(cartItemDto.getCreatedAt() != null ? formatDate(cartItemDto.getCreatedAt().format(DateTimeFormatter.ISO_DATE_TIME)) : "")
+                .isChecked(cartItemDto.isChecked())
                 .build();
     }
 
@@ -68,6 +81,7 @@ public class CartItemMapperImpl implements CartItemMapper {
                 .shoppingCart(null)
                 .amountOfProduct(cartItemRequest.getAmountOfProduct())
                 .unitValue(parseToDouble(cartItemRequest.getUnitValue()))
+                .isChecked(cartItemRequest.isChecked())
                 .product(ProductDto.builder().id(cartItemRequest.getProductId()).build())
                 .id(cartItemRequest.getId())
                 .createdAt(LocalDateTime.now())

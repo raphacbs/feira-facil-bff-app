@@ -12,4 +12,5 @@ public class CartItemListResponse {
     private int totalCartItems;
     private int totalProducts;
     private String amountItems;
+    private String subtotalChecked;
 }

@@ -15,4 +15,5 @@ public class CartItemRequest {
     private UUID id;
     private String unitValue;
     private int amountOfProduct;
+    private boolean isChecked;
 }

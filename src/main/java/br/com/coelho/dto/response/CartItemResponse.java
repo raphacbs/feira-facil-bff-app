@@ -15,5 +15,6 @@ public class CartItemResponse implements Serializable {
     private int amountOfProduct;
     private String subtotal;
     private String createdAt;
+    private boolean isChecked;
 }
 

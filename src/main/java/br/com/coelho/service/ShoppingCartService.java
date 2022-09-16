@@ -90,8 +90,11 @@ public class ShoppingCartService {
                 requestEntity,
                 CartItemDto.class);
         final CartItemDto cartItemDtoSaved = responseEntity.getBody();
-        final CartItemResponse shoppingCartResponse = this.cartItemMapper.transform(cartItemDtoSaved);
-        return ResponseEntity.ok().body(shoppingCartResponse);
+        if(cartItemDtoSaved == null ){
+            return ResponseEntity.internalServerError().build();
+        }
+        final ResponseEntity<CartItemListResponse> shoppingList = getCartItems(cartItemDtoSaved.getShoppingCart().getId());
+        return ResponseEntity.ok().body(shoppingList.getBody());
     }
 
     public ResponseEntity updateCartItem(UUID shoppingCartId, CartItemRequest cartItemRequest) throws ParseException {
@@ -103,8 +106,11 @@ public class ShoppingCartService {
                 HttpMethod.PUT,
                 entity,
                 CartItemDto.class);
-        final CartItemResponse shoppingCartResponse = this.cartItemMapper.transform(response.getBody());
-        return ResponseEntity.ok().body(shoppingCartResponse);
+        if(response.getBody() == null ){
+            return ResponseEntity.internalServerError().build();
+        }
+        final ResponseEntity<CartItemListResponse> shoppingList = getCartItems(response.getBody().getShoppingCart().getId());
+        return ResponseEntity.ok().body(shoppingList.getBody());
     }
 
     public ResponseEntity update(ShoppingCartDto shoppingCartDto) {

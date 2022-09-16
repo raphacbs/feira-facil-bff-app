@@ -21,5 +21,6 @@ public class CartItemDto implements Serializable {
     private double unitValue;
     private int amountOfProduct;
     private double subtotal;
+    private boolean isChecked;
     private LocalDateTime createdAt;
 }
