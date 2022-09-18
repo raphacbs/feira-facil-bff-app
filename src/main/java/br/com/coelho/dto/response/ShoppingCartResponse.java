@@ -20,4 +20,5 @@ public class ShoppingCartResponse  implements Serializable {
         private String amount;
         private int amountProducts;
         private boolean isArchived;
+        private int amountCheckedProducts;
 }

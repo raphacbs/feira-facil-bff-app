@@ -21,4 +21,5 @@ public class ShoppingCartDto implements Serializable {
     private double amount;
     private int amountProducts;
     private boolean isArchived;
+    private int amountCheckedProducts;
 }
