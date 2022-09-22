@@ -53,7 +53,7 @@ public class CartItemMapperImpl implements CartItemMapper {
                 .amountItems(parseCurrency(subtotal))
                 .totalCartItems(cartItemResponseList.size())
                 .totalProducts(cartItemResponseList.stream().mapToInt(CartItemResponse::getAmountOfProduct).sum())
-                .totalProductsChecked(cartItemResponseList.stream().mapToInt(item-> item.isChecked()? 1: 0).sum())
+                .totalProductsChecked(cartItemResponseList.stream().mapToInt(item-> item.isChecked()? item.getAmountOfProduct(): 0).sum())
                 .subtotalChecked(parseCurrency(subtotalChecked))
                 .build();
 
