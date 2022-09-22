@@ -11,6 +11,7 @@ public class CartItemListResponse {
     private List<CartItemResponse> cartItems;
     private int totalCartItems;
     private int totalProducts;
+    private int totalProductsChecked;
     private String amountItems;
     private String subtotalChecked;
 }
