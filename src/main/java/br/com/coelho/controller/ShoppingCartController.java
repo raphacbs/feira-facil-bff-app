@@ -3,6 +3,8 @@ package br.com.coelho.controller;
 import br.com.coelho.dto.ShoppingCartDto;
 import br.com.coelho.dto.request.CartItemRequest;
 import br.com.coelho.dto.response.CartItemListResponse;
+import br.com.coelho.dto.response.CartItemResponsePage;
+import br.com.coelho.dto.response.ShoppingCartResponsePage;
 import br.com.coelho.service.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +26,12 @@ public class ShoppingCartController {
     }
 
     @GetMapping
-    public ResponseEntity get(@RequestParam boolean isArchived) {
-        return ResponseEntity.ok().body(this.shoppingCartService.getAll(isArchived));
+    public ResponseEntity<ShoppingCartResponsePage> get(
+            @RequestParam(value = "pageNo", defaultValue = "1", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "createAt", required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = "desc", required = false) String sortDir) {
+        return ResponseEntity.ok().body(this.shoppingCartService.getAll(pageNo, pageSize, sortBy, sortDir));
     }
 
     @PostMapping
@@ -42,13 +48,19 @@ public class ShoppingCartController {
     public ResponseEntity addCartItem(@PathVariable("id") UUID id, @RequestBody CartItemRequest cartItemRequest) throws ParseException {
         return this.shoppingCartService.addCartItem(id, cartItemRequest);
     }
+
     @PutMapping("{id:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$}/cart-item")
     public ResponseEntity updateCartItem(@PathVariable("id") UUID id, @RequestBody CartItemRequest cartItemRequest) throws ParseException {
         return this.shoppingCartService.updateCartItem(id, cartItemRequest);
     }
 
     @GetMapping("/{id:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$}/cart-item")
-    public ResponseEntity<CartItemListResponse> getCartItems(@PathVariable("id") UUID shoppingCartId){
-        return this.shoppingCartService.getCartItems(shoppingCartId);
+    public ResponseEntity<CartItemResponsePage> getCartItems(
+            @PathVariable("id") UUID shoppingCartId,
+            @RequestParam(value = "pageNo", defaultValue = "1", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "createdAt", required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = "desc", required = false) String sortDir) {
+        return this.shoppingCartService.getCartItems(shoppingCartId, pageNo, pageSize, sortBy, sortDir);
     }
 }
