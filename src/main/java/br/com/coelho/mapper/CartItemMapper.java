@@ -4,6 +4,8 @@ import br.com.coelho.dto.CartItemDto;
 import br.com.coelho.dto.request.CartItemRequest;
 import br.com.coelho.dto.response.CartItemListResponse;
 import br.com.coelho.dto.response.CartItemResponse;
+import br.com.coelho.dto.response.CartItemResponsePage;
+import br.com.coelho.dto.response.CartItemResponsePageInfo;
 import org.mapstruct.factory.Mappers;
 
 import java.text.ParseException;
@@ -13,6 +15,7 @@ public interface CartItemMapper {
     CartItemMapper INSTANCE = Mappers.getMapper(CartItemMapper.class);
     List<CartItemResponse> transform(List<CartItemDto> shoppingCartProducts);
     CartItemListResponse toCartItemListResponse(List<CartItemDto> shoppingCartProducts);
+    CartItemResponsePageInfo toCartItemListResponse(CartItemResponsePage cartItemResponsePage);
     CartItemResponse transform(CartItemDto shoppingCartProducts);
     CartItemDto transform(CartItemRequest cartItemRequest) throws ParseException;
 }

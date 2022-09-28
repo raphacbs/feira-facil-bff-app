@@ -14,7 +14,7 @@ import java.util.UUID;
 public class CartItemRequest {
     private UUID productId;
     private UUID id;
-    private String unitValue;
+    private String price;
     private int amountOfProduct;
     @JsonProperty("isChecked")
     private boolean isChecked;

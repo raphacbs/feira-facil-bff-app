@@ -4,5 +4,5 @@ import br.com.coelho.dto.ShoppingCartDto;
 import lombok.Builder;
 
 @Builder
-public class ShoppingCartResponsePage extends ResponsePage<ShoppingCartDto> {
+public class ShoppingListResponsePage extends ResponsePage<ShoppingCartDto> {
 }

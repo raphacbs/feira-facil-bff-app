@@ -2,14 +2,11 @@ package br.com.coelho.service;
 
 import br.com.coelho.dto.CartItemDto;
 import br.com.coelho.dto.ShoppingCartDto;
-import br.com.coelho.dto.response.CartItemResponsePage;
-import br.com.coelho.dto.response.ShoppingCartResponsePage;
+import br.com.coelho.dto.response.*;
 import br.com.coelho.helper.AuthHelper;
 import br.com.coelho.mapper.CartItemMapper;
-import br.com.coelho.mapper.ShoppingCartMapper;
+import br.com.coelho.mapper.ShoppingListMapper;
 import br.com.coelho.dto.request.CartItemRequest;
-import br.com.coelho.dto.response.CartItemListResponse;
-import br.com.coelho.dto.response.ShoppingCartResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
@@ -30,16 +27,16 @@ import java.util.stream.Collectors;
 @Service
 public class ShoppingCartService {
 
-    private final ShoppingCartMapper shoppingCartMapper = ShoppingCartMapper.INSTANCE;
+    private final ShoppingListMapper shoppingListMapper = ShoppingListMapper.INSTANCE;
     private final CartItemMapper cartItemMapper = CartItemMapper.INSTANCE;
     private final Logger logger = LoggerFactory.getLogger(ShoppingCartService.class);
 
 
-    public ShoppingCartResponsePage getAll(int pageNo, int pageSize, String sortBy, String sortDir) {
+    public ShoppingListResponsePageInfo getAll(int pageNo, int pageSize, String sortBy, String sortDir) {
         logger.info("Searching shopping lists with params: pageNO:{}, pageSize:{}, sortBy:{}, sortDir:{}", pageNo, pageSize, sortBy, sortDir);
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity<Void> requestEntity = new HttpEntity<>(AuthHelper.getHeaderAuth());
-        final ResponseEntity<ShoppingCartResponsePage> exchange = restTemplate
+        final ResponseEntity<ShoppingListResponsePage> exchange = restTemplate
                 .exchange(String.format("%s%s?pageNo=%s&pageSize=%s&sortBy=%s&sortDir=%s"
                                 , System.getenv("BASE_URL")
                                 , "/api/v1/shopping-carts"
@@ -49,8 +46,9 @@ public class ShoppingCartService {
                                 , sortDir),
                         HttpMethod.GET,
                         requestEntity,
-                        ShoppingCartResponsePage.class);
-        return exchange.getBody();
+                        ShoppingListResponsePage.class);
+       ShoppingListResponsePageInfo shoppingListResponsePageInfo = shoppingListMapper.transform(exchange.getBody());
+        return shoppingListResponsePageInfo;
     }
 
     public ResponseEntity create(ShoppingCartDto shoppingCartDto) {
@@ -65,8 +63,8 @@ public class ShoppingCartService {
                 ShoppingCartDto.class);
         ShoppingCartDto shoppingCartDtoResponse = exchange.getBody();
         logger.info("ShoppingCart saved with successful: {}", shoppingCartDtoResponse);
-        final ShoppingCartResponse shoppingCartResponse = this.shoppingCartMapper.transform(shoppingCartDtoResponse);
-        return ResponseEntity.ok().body(shoppingCartResponse);
+        final ShoppingListResponse shoppingListResponse = this.shoppingListMapper.transform(shoppingCartDtoResponse);
+        return ResponseEntity.ok().body(shoppingListResponse);
     }
 
     public ResponseEntity<CartItemListResponse> getCartItems(UUID shoppingCartId) {
@@ -84,7 +82,7 @@ public class ShoppingCartService {
         return ResponseEntity.ok().body(cartItemListResponse);
     }
 
-    public ResponseEntity<CartItemResponsePage> getCartItems(UUID shoppingCartId, int pageNo, int pageSize, String sortBy, String sortDir) {
+    public ResponseEntity<CartItemResponsePageInfo> getCartItems(UUID shoppingCartId, int pageNo, int pageSize, String sortBy, String sortDir) {
         logger.info("Searching shopping lists with params: shoppingCartId:{}, pageNO:{}, pageSize:{}, sortBy:{}, sortDir:{}", shoppingCartId, pageNo, pageSize, sortBy, sortDir);
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity<Void> requestEntity = new HttpEntity<>(AuthHelper.getHeaderAuth());
@@ -103,8 +101,8 @@ public class ShoppingCartService {
 //        CartItemDto[] cartItemDtos = responseEntity.getBody();
 //        assert cartItemDtos != null;
 //        List<CartItemDto> cartItemDtoList = Arrays.stream(cartItemDtos).sorted(Comparator.comparing(CartItemDto::getCreatedAt)).collect(Collectors.toList());
-//        final CartItemListResponse cartItemListResponse = this.cartItemMapper.toCartItemListResponse(cartItemDtoList);
-        return ResponseEntity.ok().body(responseEntity.getBody());
+        final CartItemResponsePageInfo cartItemResponsePageInfo = this.cartItemMapper.toCartItemListResponse(responseEntity.getBody());
+        return ResponseEntity.ok().body(cartItemResponsePageInfo);
     }
 
     public ResponseEntity addCartItem(UUID shoppingCartId, CartItemRequest cartItemRequest) throws ParseException {
@@ -147,8 +145,8 @@ public class ShoppingCartService {
                 , HttpMethod.PUT
                 , entity
                 , ShoppingCartDto.class);
-        final ShoppingCartResponse shoppingCartResponse = this.shoppingCartMapper.transform(shoppingCartDtoResponse.getBody());
-        return ResponseEntity.ok().body(shoppingCartResponse);
+        final ShoppingListResponse shoppingListResponse = this.shoppingListMapper.transform(shoppingCartDtoResponse.getBody());
+        return ResponseEntity.ok().body(shoppingListResponse);
     }
 
     public boolean deleteCartItem(UUID id) {

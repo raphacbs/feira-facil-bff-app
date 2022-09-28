@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ShoppingCartResponse  implements Serializable {
+public class ShoppingListResponse implements Serializable {
         private String id;
         private String description;
         private String supermarket;

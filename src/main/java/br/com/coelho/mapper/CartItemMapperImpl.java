@@ -5,6 +5,8 @@ import br.com.coelho.dto.CartItemDto;
 import br.com.coelho.dto.request.CartItemRequest;
 import br.com.coelho.dto.response.CartItemListResponse;
 import br.com.coelho.dto.response.CartItemResponse;
+import br.com.coelho.dto.response.CartItemResponsePage;
+import br.com.coelho.dto.response.CartItemResponsePageInfo;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -60,6 +62,20 @@ public class CartItemMapperImpl implements CartItemMapper {
     }
 
     @Override
+    public CartItemResponsePageInfo toCartItemListResponse(CartItemResponsePage cartItemResponsePage) {
+        CartItemListResponse cartItemListResponse = toCartItemListResponse(cartItemResponsePage.getContent());
+        return CartItemResponsePageInfo.builder()
+                .content(cartItemListResponse)
+                .last(cartItemResponsePage.isLast())
+                .pageNo(cartItemResponsePage.getPageNo())
+                .pageSize(cartItemResponsePage.getPageSize())
+                .totalElements(cartItemResponsePage.getTotalElements())
+                .totalPages(cartItemResponsePage.getTotalPages())
+                .build();
+
+    }
+
+    @Override
     public CartItemResponse transform(CartItemDto cartItemDto) {
 
         return CartItemResponse.builder()
@@ -68,7 +84,7 @@ public class CartItemMapperImpl implements CartItemMapper {
                 .subtotal(parseCurrency(cartItemDto.getSubtotal()))
                 .product(ProductMapper.INSTANCE.transfome(cartItemDto.getProduct()))
                 .id(cartItemDto.getId().toString())
-                .unitValue(parseCurrency(cartItemDto.getUnitValue()))
+                .price(parseCurrency(cartItemDto.getUnitValue()))
                 .amountOfProduct(cartItemDto.getAmountOfProduct())
                 .subtotal(parseCurrency(cartItemDto.getSubtotal()))
                 .createdAt(cartItemDto.getCreatedAt() != null ? formatDate(cartItemDto.getCreatedAt().format(DateTimeFormatter.ISO_DATE_TIME)) : "")
@@ -81,7 +97,7 @@ public class CartItemMapperImpl implements CartItemMapper {
         return CartItemDto.builder()
                 .shoppingCart(null)
                 .amountOfProduct(cartItemRequest.getAmountOfProduct())
-                .unitValue(parseToDouble(cartItemRequest.getUnitValue()))
+                .unitValue(parseToDouble(cartItemRequest.getPrice()))
                 .isChecked(cartItemRequest.isChecked())
                 .product(ProductDto.builder().id(cartItemRequest.getProductId()).build())
                 .id(cartItemRequest.getId())

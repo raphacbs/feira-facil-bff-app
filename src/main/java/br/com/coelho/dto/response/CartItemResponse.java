@@ -12,7 +12,7 @@ public class CartItemResponse implements Serializable {
     private String id;
     private String shoppingCartId;
     private ProductResponse product;
-    private String unitValue;
+    private String price;
     private int amountOfProduct;
     private String subtotal;
     private String createdAt;

@@ -2,9 +2,9 @@ package br.com.coelho.controller;
 
 import br.com.coelho.dto.ShoppingCartDto;
 import br.com.coelho.dto.request.CartItemRequest;
-import br.com.coelho.dto.response.CartItemListResponse;
-import br.com.coelho.dto.response.CartItemResponsePage;
-import br.com.coelho.dto.response.ShoppingCartResponsePage;
+import br.com.coelho.dto.response.CartItemResponsePageInfo;
+import br.com.coelho.dto.response.ShoppingListResponsePage;
+import br.com.coelho.dto.response.ShoppingListResponsePageInfo;
 import br.com.coelho.service.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +26,7 @@ public class ShoppingCartController {
     }
 
     @GetMapping
-    public ResponseEntity<ShoppingCartResponsePage> get(
+    public ResponseEntity<ShoppingListResponsePageInfo> get(
             @RequestParam(value = "pageNo", defaultValue = "1", required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
             @RequestParam(value = "sortBy", defaultValue = "createAt", required = false) String sortBy,
@@ -55,7 +55,7 @@ public class ShoppingCartController {
     }
 
     @GetMapping("/{id:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$}/cart-item")
-    public ResponseEntity<CartItemResponsePage> getCartItems(
+    public ResponseEntity<CartItemResponsePageInfo> getCartItems(
             @PathVariable("id") UUID shoppingCartId,
             @RequestParam(value = "pageNo", defaultValue = "1", required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,

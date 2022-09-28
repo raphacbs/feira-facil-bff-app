@@ -1,7 +1,9 @@
 package br.com.coelho.mapper;
 
 import br.com.coelho.dto.ShoppingCartDto;
-import br.com.coelho.dto.response.ShoppingCartResponse;
+import br.com.coelho.dto.response.ShoppingListResponse;
+import br.com.coelho.dto.response.ShoppingListResponsePage;
+import br.com.coelho.dto.response.ShoppingListResponsePageInfo;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -11,10 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class ShoppingCartMapperImpl implements ShoppingCartMapper {
+public class ShoppingListMapperImpl implements ShoppingListMapper {
     @Override
-    public ShoppingCartResponse transform(ShoppingCartDto shoppingCartDto) {
-        return ShoppingCartResponse.builder()
+    public ShoppingListResponse transform(ShoppingCartDto shoppingCartDto) {
+        return ShoppingListResponse.builder()
                 .amount(parseCurrency(shoppingCartDto.getAmount()))
                 .amountProducts(shoppingCartDto.getAmountProducts())
                 .createAt(formatDate(shoppingCartDto.getCreateAt()))
@@ -28,13 +30,28 @@ public class ShoppingCartMapperImpl implements ShoppingCartMapper {
     }
 
     @Override
-    public List<ShoppingCartResponse> transform(List<ShoppingCartDto> shoppingCartDtos) {
-        List<ShoppingCartResponse> shoppingCartDtoList = new ArrayList<ShoppingCartResponse>();
+    public List<ShoppingListResponse> transform(List<ShoppingCartDto> shoppingCartDtos) {
+        List<ShoppingListResponse> shoppingCartDtoList = new ArrayList<ShoppingListResponse>();
         shoppingCartDtos.forEach(shoppingCartDto -> {
             shoppingCartDtoList.add(transform(shoppingCartDto));
         });
         return shoppingCartDtoList;
     }
+
+    @Override
+    public ShoppingListResponsePageInfo transform(ShoppingListResponsePage shoppingListResponsePage) {
+        List<ShoppingListResponse> list = transform(shoppingListResponsePage.getContent());
+        return ShoppingListResponsePageInfo.builder()
+                .content(list)
+                .last(shoppingListResponsePage.isLast())
+                .pageNo(shoppingListResponsePage.getPageNo())
+                .pageSize(shoppingListResponsePage.getPageSize())
+                .totalElements(shoppingListResponsePage.getTotalElements())
+                .totalPages(shoppingListResponsePage.getTotalPages())
+                .build();
+
+    }
+
 
     private String parseCurrency(final double amount) {
         NumberFormat nf = NumberFormat.getNumberInstance(Locale.FRANCE);
