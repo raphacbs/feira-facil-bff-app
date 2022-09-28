@@ -63,7 +63,16 @@ public class CartItemMapperImpl implements CartItemMapper {
 
     @Override
     public CartItemResponsePageInfo toCartItemListResponse(CartItemResponsePage cartItemResponsePage) {
-        CartItemListResponse cartItemListResponse = toCartItemListResponse(cartItemResponsePage.getContent());
+        //CartItemListResponse cartItemListResponse = toCartItemListResponse(cartItemResponsePage.getContent());
+        List<CartItemResponse> cartItemResponseList = transform(cartItemResponsePage.getCartItems());
+        CartItemListResponse cartItemListResponse = CartItemListResponse.builder()
+                .cartItems(cartItemResponseList)
+                .subtotalChecked(parseCurrency(cartItemResponsePage.getSubtotalChecked()))
+                .amountItems(parseCurrency(cartItemResponsePage.getAmountItems()))
+                .totalCartItems(cartItemResponsePage.getTotalCartItems())
+                .totalProducts(cartItemResponsePage.getTotalProducts())
+                .totalProductsChecked(cartItemResponsePage.getTotalProductsChecked())
+                .build();
         return CartItemResponsePageInfo.builder()
                 .content(cartItemListResponse)
                 .last(cartItemResponsePage.isLast())

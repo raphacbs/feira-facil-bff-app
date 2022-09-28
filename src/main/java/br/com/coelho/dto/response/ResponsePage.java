@@ -13,4 +13,5 @@ public abstract class ResponsePage<T> implements Serializable {
     private long totalElements = 0;
     private int totalPages = 0;
     private boolean last = false;
+
 }

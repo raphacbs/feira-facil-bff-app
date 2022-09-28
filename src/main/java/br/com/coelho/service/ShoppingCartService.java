@@ -47,8 +47,7 @@ public class ShoppingCartService {
                         HttpMethod.GET,
                         requestEntity,
                         ShoppingListResponsePage.class);
-       ShoppingListResponsePageInfo shoppingListResponsePageInfo = shoppingListMapper.transform(exchange.getBody());
-        return shoppingListResponsePageInfo;
+        return shoppingListMapper.transform(exchange.getBody());
     }
 
     public ResponseEntity create(ShoppingCartDto shoppingCartDto) {
@@ -71,7 +70,7 @@ public class ShoppingCartService {
         logger.info("Searching cart items to shopping cart '{}'", shoppingCartId);
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity<Void> requestEntity = new HttpEntity<>(AuthHelper.getHeaderAuth());
-        final ResponseEntity<CartItemDto[]> responseEntity = restTemplate.exchange(System.getenv("BASE_URL") + "/api/v1/cart-items?shoppingCartId=" + shoppingCartId,
+        final ResponseEntity<CartItemDto[]> responseEntity = restTemplate.exchange(System.getenv("BASE_URL") + "/api/v1/cart-items?shoppingCartId=" + shoppingCartId + "/all",
                 HttpMethod.GET,
                 requestEntity,
                 CartItemDto[].class);
@@ -98,6 +97,8 @@ public class ShoppingCartService {
                         HttpMethod.GET,
                         requestEntity,
                         CartItemResponsePage.class);
+
+
 //        CartItemDto[] cartItemDtos = responseEntity.getBody();
 //        assert cartItemDtos != null;
 //        List<CartItemDto> cartItemDtoList = Arrays.stream(cartItemDtos).sorted(Comparator.comparing(CartItemDto::getCreatedAt)).collect(Collectors.toList());
@@ -122,7 +123,7 @@ public class ShoppingCartService {
         return ResponseEntity.ok().body(shoppingList.getBody());
     }
 
-    public ResponseEntity updateCartItem(UUID shoppingCartId, CartItemRequest cartItemRequest) throws ParseException {
+    public ResponseEntity updateCartItem(UUID shoppingCartId, CartItemRequest cartItemRequest, int pageNo, int pageSize, String sortBy, String sortDir) throws ParseException {
         RestTemplate restTemplate = new RestTemplate();
         final CartItemDto cartItemDto = this.cartItemMapper.transform(cartItemRequest);
         cartItemDto.setShoppingCart(ShoppingCartDto.builder().id(shoppingCartId).build());
@@ -134,8 +135,9 @@ public class ShoppingCartService {
         if (response.getBody() == null) {
             return ResponseEntity.internalServerError().build();
         }
-        final ResponseEntity<CartItemListResponse> shoppingList = getCartItems(response.getBody().getShoppingCart().getId());
-        return ResponseEntity.ok().body(shoppingList.getBody());
+        final ResponseEntity<CartItemResponsePageInfo> responsePageInfoResponseEntity = getCartItems(response.getBody().getShoppingCart().getId(), pageNo, pageSize, sortBy, sortDir);
+
+        return ResponseEntity.ok().body(responsePageInfoResponseEntity.getBody());
     }
 
     public ResponseEntity update(ShoppingCartDto shoppingCartDto) {

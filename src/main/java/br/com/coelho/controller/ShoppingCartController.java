@@ -50,8 +50,13 @@ public class ShoppingCartController {
     }
 
     @PutMapping("{id:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$}/cart-item")
-    public ResponseEntity updateCartItem(@PathVariable("id") UUID id, @RequestBody CartItemRequest cartItemRequest) throws ParseException {
-        return this.shoppingCartService.updateCartItem(id, cartItemRequest);
+    public ResponseEntity updateCartItem(@PathVariable("id") UUID id,
+                                         @RequestBody CartItemRequest cartItemRequest,
+                                         @RequestParam(value = "pageNo", defaultValue = "1", required = false) int pageNo,
+                                         @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+                                         @RequestParam(value = "sortBy", defaultValue = "createdAt", required = false) String sortBy,
+                                         @RequestParam(value = "sortDir", defaultValue = "desc", required = false) String sortDir) throws ParseException {
+        return this.shoppingCartService.updateCartItem(id, cartItemRequest, pageNo, pageSize, sortBy, sortDir);
     }
 
     @GetMapping("/{id:^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$}/cart-item")
