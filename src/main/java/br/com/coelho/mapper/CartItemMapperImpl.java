@@ -14,6 +14,7 @@ import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -83,6 +84,14 @@ public class CartItemMapperImpl implements CartItemMapper {
                 .build();
 
     }
+
+    @Override
+    public void updateCartItemResonsePageInfo(CartItemDto cartItemDto, CartItemResponsePageInfo cartItemResponsePageInfo) {
+        final CartItemResponse cartItemResponse = transform(cartItemDto);
+        cartItemResponsePageInfo.getContent().setCartItems(Collections.singletonList(cartItemResponse));
+    }
+
+
 
     @Override
     public CartItemResponse transform(CartItemDto cartItemDto) {

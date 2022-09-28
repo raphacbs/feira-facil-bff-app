@@ -16,6 +16,7 @@ public interface CartItemMapper {
     List<CartItemResponse> transform(List<CartItemDto> shoppingCartProducts);
     CartItemListResponse toCartItemListResponse(List<CartItemDto> shoppingCartProducts);
     CartItemResponsePageInfo toCartItemListResponse(CartItemResponsePage cartItemResponsePage);
+    void updateCartItemResonsePageInfo(CartItemDto cartItemDto, CartItemResponsePageInfo cartItemResponsePageInfo);
     CartItemResponse transform(CartItemDto shoppingCartProducts);
     CartItemDto transform(CartItemRequest cartItemRequest) throws ParseException;
 }

@@ -18,10 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -120,7 +117,10 @@ public class ShoppingCartService {
             return ResponseEntity.internalServerError().build();
         }
         final ResponseEntity<CartItemResponsePageInfo> shoppingList = getCartItems(cartItemDtoSaved.getShoppingCart().getId(),pageNo, pageSize, sortBy,sortDir);
-        return ResponseEntity.ok().body(shoppingList.getBody());
+        final CartItemResponse cartItemResponse = this.cartItemMapper.transform(cartItemDtoSaved);
+        this.cartItemMapper.updateCartItemResonsePageInfo(cartItemDtoSaved, shoppingList.getBody());
+
+        return ResponseEntity.ok().body(shoppingList.getBody().getContent());
     }
 
     public ResponseEntity updateCartItem(UUID shoppingCartId, CartItemRequest cartItemRequest, int pageNo, int pageSize, String sortBy, String sortDir) throws ParseException {
@@ -136,8 +136,8 @@ public class ShoppingCartService {
             return ResponseEntity.internalServerError().build();
         }
         final ResponseEntity<CartItemResponsePageInfo> responsePageInfoResponseEntity = getCartItems(response.getBody().getShoppingCart().getId(), pageNo, pageSize, sortBy, sortDir);
-
-        return ResponseEntity.ok().body(responsePageInfoResponseEntity.getBody());
+        this.cartItemMapper.updateCartItemResonsePageInfo(response.getBody(), responsePageInfoResponseEntity.getBody());
+        return ResponseEntity.ok().body(responsePageInfoResponseEntity.getBody().getContent());
     }
 
     public ResponseEntity update(ShoppingCartDto shoppingCartDto) {
