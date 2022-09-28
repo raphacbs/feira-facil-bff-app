@@ -106,7 +106,7 @@ public class ShoppingCartService {
         return ResponseEntity.ok().body(cartItemResponsePageInfo);
     }
 
-    public ResponseEntity addCartItem(UUID shoppingCartId, CartItemRequest cartItemRequest) throws ParseException {
+    public ResponseEntity addCartItem(UUID shoppingCartId, CartItemRequest cartItemRequest, int pageNo, int pageSize, String sortBy, String sortDir) throws ParseException {
         RestTemplate restTemplate = new RestTemplate();
         final CartItemDto cartItemDto = this.cartItemMapper.transform(cartItemRequest);
         cartItemDto.setShoppingCart(ShoppingCartDto.builder().id(shoppingCartId).build());
@@ -119,7 +119,7 @@ public class ShoppingCartService {
         if (cartItemDtoSaved == null) {
             return ResponseEntity.internalServerError().build();
         }
-        final ResponseEntity<CartItemListResponse> shoppingList = getCartItems(cartItemDtoSaved.getShoppingCart().getId());
+        final ResponseEntity<CartItemResponsePageInfo> shoppingList = getCartItems(cartItemDtoSaved.getShoppingCart().getId(),pageNo, pageSize, sortBy,sortDir);
         return ResponseEntity.ok().body(shoppingList.getBody());
     }
 
