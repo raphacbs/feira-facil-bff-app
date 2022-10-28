@@ -33,13 +33,13 @@ public class ProductController {
             @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
             @RequestParam(value = "sortBy", defaultValue = "createAt", required = false) String sortBy,
-            @RequestParam(value = "sortDir", defaultValue = "desc", required = false) String sortDir) throws Exception {
+            @RequestParam(value = "sortDir", defaultValue = "desc", required = false) String sortDir,
+            @RequestHeader(value = "supermarket-id", required = false) String supermakertId) throws Exception {
 //        final Optional<ProductListResponse> product = this.productService.get(ProductRequest.builder().ean(ean).description(description).build());
 //        return product.map(productResponse -> ResponseEntity.status(HttpStatus.OK).body(productResponse))
 //                .orElseGet(() -> ResponseEntity.status(HttpStatus.NO_CONTENT).build());
-        return ResponseEntity.ok(this.productService.getByParams(pageNo, pageSize, sortBy, sortDir, description, ean));
+        return ResponseEntity.ok(this.productService.getByParams(pageNo, pageSize, sortBy, sortDir, description, ean, supermakertId));
     }
-
 
 
     @PostMapping()

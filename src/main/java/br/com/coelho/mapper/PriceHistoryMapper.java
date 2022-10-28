@@ -8,6 +8,7 @@ import br.com.coelho.dto.response.PriceHistoryResponsePageInfo;
 import br.com.coelho.dto.response.ProductListResponse;
 import org.mapstruct.factory.Mappers;
 
+import java.text.ParseException;
 import java.util.List;
 
 public interface PriceHistoryMapper {
@@ -15,5 +16,7 @@ public interface PriceHistoryMapper {
     PriceHistoryResponsePageInfo transform(PriceHistoryResponsePage priceHistoryResponsePage);
     List<PriceHistoryResponse> transform(List<PriceHistoryDto> priceHistoryDtos);
     PriceHistoryResponse transform(PriceHistoryDto priceHistoryDto);
+    PriceHistoryDto transform(PriceHistoryResponse priceHistoryResponse) throws ParseException;
+
 
 }

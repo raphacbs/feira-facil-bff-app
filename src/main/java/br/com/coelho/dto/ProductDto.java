@@ -21,4 +21,5 @@ public class ProductDto implements Serializable {
     private  String ean;
     private  LocalDateTime createAt = null;
     private  LocalDateTime updateAt = null;
+    private PriceHistoryDto lastPrice;
 }

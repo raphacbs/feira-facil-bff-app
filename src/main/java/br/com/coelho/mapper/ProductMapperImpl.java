@@ -3,15 +3,15 @@ package br.com.coelho.mapper;
 import br.com.coelho.dto.ProductCosmoDto;
 import br.com.coelho.dto.ProductDto;
 import br.com.coelho.dto.request.ProductRequest;
-import br.com.coelho.dto.response.ProductListResponse;
-import br.com.coelho.dto.response.ProductResponse;
-import br.com.coelho.dto.response.ProductResponsePage;
-import br.com.coelho.dto.response.ProductResponsePageInfo;
+import br.com.coelho.dto.response.*;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 public class ProductMapperImpl implements ProductMapper {
@@ -22,6 +22,19 @@ public class ProductMapperImpl implements ProductMapper {
         if (productDto == null) {
             return null;
         }
+        PriceHistoryResponse priceHistoryResponse = null;
+
+        if (productDto.getLastPrice() != null) {
+            priceHistoryResponse = PriceHistoryResponse.builder()
+                    .supermarketId(productDto.getLastPrice().getSupermarketId().toString())
+                    .date(formatDate(productDto.getLastPrice().getDate().toString()))
+                    .id(productDto.getLastPrice().getId().toString())
+                    .productId(productDto.getLastPrice().getProductId().toString())
+                    .price(parseCurrency(productDto.getLastPrice().getPrice()))
+                    .build();
+        }
+
+
         return ProductResponse.builder()
                 .createAt(productDto.getCreateAt() == null ? null : formatDate(productDto.getCreateAt().toString()))
                 .description(productDto.getDescription())
@@ -30,6 +43,7 @@ public class ProductMapperImpl implements ProductMapper {
                 .image(productDto.getImage())
                 .updateAt(productDto.getUpdateAt() == null ? null : formatDate(productDto.getUpdateAt().toString()))
                 .id(productDto.getId().toString())
+                .lastPrice(priceHistoryResponse)
                 .build();
     }
 
@@ -81,10 +95,10 @@ public class ProductMapperImpl implements ProductMapper {
 
     @Override
     public ProductListResponse transfome(Optional<ProductResponse> productResponse) {
-        if(productResponse.isPresent()){
+        if (productResponse.isPresent()) {
             List<ProductResponse> productResponseList = new ArrayList<ProductResponse>();
             productResponseList.add(productResponse.get());
-          return ProductListResponse.builder().count(1).products(productResponseList).build();
+            return ProductListResponse.builder().count(1).products(productResponseList).build();
         }
         return null;
     }
@@ -104,7 +118,7 @@ public class ProductMapperImpl implements ProductMapper {
 
     @Override
     public ProductResponsePageInfo transfome(ProductResponsePage productResponsePage) {
-        ProductListResponse productResponseList =  transforme(productResponsePage.getContent());
+        ProductListResponse productResponseList = transforme(productResponsePage.getContent());
         return ProductResponsePageInfo.builder()
                 .content(productResponseList.getProducts())
                 .last(productResponsePage.isLast())
@@ -119,4 +133,12 @@ public class ProductMapperImpl implements ProductMapper {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         return LocalDateTime.parse(date.replaceAll("\\.\\d+", ""), formatter).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
+
+    private String parseCurrency(final double amount) {
+        NumberFormat nf = NumberFormat.getNumberInstance(Locale.FRANCE);
+        DecimalFormat df = (DecimalFormat) nf;
+        df.applyPattern("#,##0.00");
+        return "R$ " + df.format(amount);
+    }
+
 }

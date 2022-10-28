@@ -1,12 +1,14 @@
 package br.com.coelho.service;
 
 import br.com.coelho.config.FileStorageProperties;
+import br.com.coelho.dto.PriceHistoryDto;
 import br.com.coelho.dto.ProductDto;
 import br.com.coelho.dto.response.*;
 import br.com.coelho.enums.EnumSearchProduct;
 import br.com.coelho.factory.SearchProductFactory;
 import br.com.coelho.helper.AuthHelper;
 import br.com.coelho.helper.GoogleHelper;
+import br.com.coelho.mapper.PriceHistoryMapper;
 import br.com.coelho.mapper.ProductMapper;
 import br.com.coelho.dto.request.ProductRequest;
 import com.google.gson.Gson;
@@ -24,6 +26,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.GeneralSecurityException;
+import java.text.ParseException;
 import java.util.*;
 
 import static java.util.Objects.nonNull;
@@ -35,17 +38,19 @@ public class ProductService {
     private final SearchProductFactory searchProductFactory;
     private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
     private static String fileId = "1w361FjVApKKJn6g8H5NVZ3IVbL-fSpo4";
+    private final PriceHistoryService priceHistoryService;
+    private final PriceHistoryMapper priceHistoryMapper = PriceHistoryMapper.INSTANCE;
 
     @Autowired
-    public ProductService(FileStorageProperties fileStorageProperties, SearchProductFactory searchProductFactory) throws IOException {
+    public ProductService(FileStorageProperties fileStorageProperties, SearchProductFactory searchProductFactory, PriceHistoryService priceHistoryService) throws IOException {
         this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir()).toAbsolutePath().normalize();
         this.searchProductFactory = searchProductFactory;
+        this.priceHistoryService = priceHistoryService;
         Files.createDirectories(this.fileStorageLocation);
     }
 
 
-
-    public ProductResponsePageInfo getByParams(int pageNo, int pageSize, String sortBy, String sortDir, String description, String ean) throws Exception {
+    public ProductResponsePageInfo getByParams(int pageNo, int pageSize, String sortBy, String sortDir, String description, String ean, String supermarketId) throws Exception {
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity<Void> requestEntity = new HttpEntity<>(AuthHelper.getHeaderAuth());
         final ResponseEntity<ProductResponsePage> response = restTemplate
@@ -62,8 +67,21 @@ public class ProductService {
                         requestEntity,
                         ProductResponsePage.class);
         if (Objects.requireNonNull(response.getBody()).getTotalElements() > 0) {
-            return this.productMapper.transfome(response.getBody());
-        } else if(nonNull(ean)) {
+            ProductResponsePage productResponsePage = response.getBody();
+            productResponsePage.getContent().forEach(productDto -> {
+                PriceHistoryResponsePageInfo responsePageInfo = priceHistoryService.getPriceHistory(0, 1, "date", "desc", productDto.getId().toString(), supermarketId);
+                final PriceHistoryResponse priceHistoryResponse = responsePageInfo.getTotalElements() > 0 ? responsePageInfo.getContent().get(0) : null;
+                if (priceHistoryResponse != null) {
+                    try {
+                        productDto.setLastPrice(priceHistoryMapper.transform(priceHistoryResponse));
+                    } catch (ParseException e) {
+                        logger.error("Error ao converter o preço do PriceHistoryResponse com o produto de id: {}", priceHistoryResponse.getProductId().toString());
+                    }
+
+                }
+            });
+            return this.productMapper.transfome(productResponsePage);
+        } else if (nonNull(ean)) {
             final SearchProduct searchProductCosmo = searchProductFactory.create(EnumSearchProduct.InCosmo);
             final List<ProductDto> productDtos = searchProductCosmo.get(ProductRequest.builder().ean(ean).build());
             if (productDtos.size() > 0) {

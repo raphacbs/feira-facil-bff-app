@@ -12,12 +12,12 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductResponse implements Serializable {
-    private  String id;
-    private  String description;
-    private  String brand;
-    private  String image;
-    private  String ean;
-    private  String createAt;
-    private  String updateAt;
+    private String id;
+    private String description;
+    private String brand;
+    private String image;
+    private String ean;
+    private String createAt;
+    private String updateAt;
     private PriceHistoryResponse lastPrice;
 }

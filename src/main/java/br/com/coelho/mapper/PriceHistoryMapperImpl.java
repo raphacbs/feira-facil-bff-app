@@ -5,11 +5,15 @@ import br.com.coelho.dto.response.*;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 
 public class PriceHistoryMapperImpl implements PriceHistoryMapper{
@@ -49,6 +53,20 @@ public class PriceHistoryMapperImpl implements PriceHistoryMapper{
         return null;
     }
 
+    @Override
+    public PriceHistoryDto transform(PriceHistoryResponse priceHistoryResponse) throws ParseException {
+        if (priceHistoryResponse != null){
+            return PriceHistoryDto.builder()
+                    .date(parseToLocalDateTime(priceHistoryResponse.getDate()))
+                    .id(UUID.fromString(priceHistoryResponse.getId()))
+                    .price(parseToDouble(priceHistoryResponse.getPrice()))
+                    .supermarketId(UUID.fromString(priceHistoryResponse.getSupermarketId()))
+                    .productId(UUID.fromString(priceHistoryResponse.getProductId()))
+                    .build();
+        }
+        return null;
+    }
+
     private String formatDate(String date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         return LocalDateTime.parse(date.replaceAll("\\.\\d+", ""), formatter).format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
@@ -59,6 +77,17 @@ public class PriceHistoryMapperImpl implements PriceHistoryMapper{
         DecimalFormat df = (DecimalFormat) nf;
         df.applyPattern("#,##0.00");
         return "R$ " + df.format(amount);
+    }
+
+    private LocalDateTime parseToLocalDateTime(String date){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return LocalDate.parse(date, formatter).atTime(LocalTime.now());
+    }
+    private double parseToDouble(String value) throws ParseException {
+        value = value.replace("R$ ","");
+        NumberFormat format = NumberFormat.getInstance(Locale.FRANCE);
+        Number number = format.parse(value);
+        return number.doubleValue();
     }
 
 
