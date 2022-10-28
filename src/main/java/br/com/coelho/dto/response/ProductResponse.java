@@ -19,4 +19,5 @@ public class ProductResponse implements Serializable {
     private  String ean;
     private  String createAt;
     private  String updateAt;
+    private PriceHistoryResponse lastPrice;
 }

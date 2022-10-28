@@ -6,20 +6,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
-@Builder
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ShoppingCartDto implements Serializable {
+public class SupermarketDto implements Serializable {
     private UUID id;
     private String description;
-    private SupermarketDto supermarket;
-    private String createAt;
-    private String updateAt;
-    private double amount;
-    private int amountProducts;
-    private boolean isArchived;
-    private int amountCheckedProducts;
+    private LocalDateTime createdAt;
 }

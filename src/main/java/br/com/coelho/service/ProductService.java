@@ -2,14 +2,13 @@ package br.com.coelho.service;
 
 import br.com.coelho.config.FileStorageProperties;
 import br.com.coelho.dto.ProductDto;
-import br.com.coelho.dto.response.ProductListResponse;
+import br.com.coelho.dto.response.*;
 import br.com.coelho.enums.EnumSearchProduct;
 import br.com.coelho.factory.SearchProductFactory;
 import br.com.coelho.helper.AuthHelper;
 import br.com.coelho.helper.GoogleHelper;
 import br.com.coelho.mapper.ProductMapper;
 import br.com.coelho.dto.request.ProductRequest;
-import br.com.coelho.dto.response.ProductResponse;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +24,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.GeneralSecurityException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+
+import static java.util.Objects.nonNull;
 
 @Service
 public class ProductService {
@@ -42,6 +42,46 @@ public class ProductService {
         this.searchProductFactory = searchProductFactory;
         Files.createDirectories(this.fileStorageLocation);
     }
+
+
+
+    public ProductResponsePageInfo getByParams(int pageNo, int pageSize, String sortBy, String sortDir, String description, String ean) throws Exception {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity<Void> requestEntity = new HttpEntity<>(AuthHelper.getHeaderAuth());
+        final ResponseEntity<ProductResponsePage> response = restTemplate
+                .exchange(String.format("%s%s?pageNo=%s&pageSize=%s&sortBy=%s&sortDir=%s&description=%s&ean=%s"
+                                , System.getenv("BASE_URL")
+                                , "/api/v1/products"
+                                , pageNo
+                                , pageSize
+                                , sortBy
+                                , sortDir
+                                , description
+                                , ean),
+                        HttpMethod.GET,
+                        requestEntity,
+                        ProductResponsePage.class);
+        if (Objects.requireNonNull(response.getBody()).getTotalElements() > 0) {
+            return this.productMapper.transfome(response.getBody());
+        } else if(nonNull(ean)) {
+            final SearchProduct searchProductCosmo = searchProductFactory.create(EnumSearchProduct.InCosmo);
+            final List<ProductDto> productDtos = searchProductCosmo.get(ProductRequest.builder().ean(ean).build());
+            if (productDtos.size() > 0) {
+                final Optional<ProductResponse> productResponse = save(productDtos.get(0));
+                if (productResponse.isPresent())
+                    return this.productMapper.transfome(productResponse.get());
+            }
+        }
+        return ProductResponsePageInfo.builder()
+                .totalPages(0)
+                .totalElements(0)
+                .content(new ArrayList<ProductResponse>())
+                .last(true)
+                .pageNo(0)
+                .pageSize(10)
+                .build();
+    }
+
 
     public Optional<ProductListResponse> get(ProductRequest productRequest) throws Exception {
         if (productRequest.getEan() != null) {
@@ -122,4 +162,6 @@ public class ProductService {
         productRequest.setImage("https://drive.google.com/uc?id=" + fileId);
         return save(productRequest);
     }
+
+
 }
